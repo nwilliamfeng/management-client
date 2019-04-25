@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 //import BackgroundImg from '../assets/imgs/background.jpg';
-
+import PrimarySearchAppBar from './AppBar'
 import { connect } from 'react-redux'
 //import { navigateAction } from '../actions'
 //import {compositOpenCommand, compositDeleteCommand} from '../components/commands'
@@ -11,15 +11,17 @@ const ShellDiv = styled.div`
 `
 
 const TitleDiv=styled.div`
-    display:flex;
+    height:70px;
+    width:100%;
+    background:red;
     flex-direction:column;
 `
 
 
 const NavigateDiv = styled.div`
-    
+    overflow-y:auto;
     height:100vh;
-    width:275px;
+    width:100%;
     outline:0;
     background:#2A3F54;
 `
@@ -31,6 +33,15 @@ const BodyDiv = styled.div`
    width:100%;
    height:100vh;
   
+`
+
+const LeftDiv=styled.div`
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    width:275px;
+    outline:0;
+    background:#2A3F54;
 `
 
 const ContainerDiv = styled.div`
@@ -62,9 +73,13 @@ class Shell extends Component {
 
     render() {
         return <ShellDiv>
-            <NavigateDiv>{'this is main view'}</NavigateDiv>
+            <LeftDiv>
+                <TitleDiv/>
+                <NavigateDiv>{this.renderChilds()} </NavigateDiv>
+            </LeftDiv>
+            
             <ContainerDiv>
-                <TitleDiv>title</TitleDiv>
+                <PrimarySearchAppBar/>
                 <BodyDiv>{this.renderChilds()}</BodyDiv>
             </ContainerDiv>
             
