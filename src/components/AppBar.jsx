@@ -165,7 +165,7 @@ class MyAppBar extends React.Component {
     return (
       <div className={classes.root}>
         <AppBar position="static">
-          <Toolbar style={{background:'lightgray'}}>
+          <Toolbar style={{background:'#EDEDED'}}>
             <IconButton className={classes.menuButton} color="#2A3F54" aria-label="Open drawer">
               <MenuIcon />
             </IconButton>

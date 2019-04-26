@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 //import {compositOpenCommand, compositDeleteCommand} from '../components/commands'
 import {TitleBar} from './TitleBar'
 import {UserPanel} from './UserPanel'
+import NavigateBar from './NavigateBar'
 
 const ShellDiv = styled.div`
     display:flex;   
@@ -27,7 +28,7 @@ const NavigateDiv = styled.div`
     height:100vh;
     width:100%;
     outline:0;
-    margin-top:40px;
+    margin-top:20px;
     background:#2A3F54;
 `
 
@@ -84,7 +85,9 @@ class Shell extends Component {
                    
                 </TitleDiv>
                 <UserPanel/>
-                <NavigateDiv>{this.renderChilds()} </NavigateDiv>
+                <NavigateDiv>
+                    <NavigateBar/>
+                 </NavigateDiv>
             </LeftDiv>
             
             <ContainerDiv>
