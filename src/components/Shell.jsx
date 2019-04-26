@@ -5,15 +5,26 @@ import MyAppBar from './AppBar'
 import { connect } from 'react-redux'
 //import { navigateAction } from '../actions'
 //import {compositOpenCommand, compositDeleteCommand} from '../components/commands'
-import {TitleBar} from './TitleBar'
-import {UserPanel} from './UserPanel'
+import { TitleBar } from './TitleBar'
+import { UserPanel } from './UserPanel'
 import NavigateBar from './NavigateBar'
+
+import { routeUrls } from '../constants'
+import { Task,TaskList } from './tasks'
+
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    NavLink,
+    Link
+} from 'react-router-dom'
 
 const ShellDiv = styled.div`
     display:flex;   
 `
 
-const TitleDiv=styled.div`
+const TitleDiv = styled.div`
     height:70px;
     width:100%;
    
@@ -41,7 +52,7 @@ const BodyDiv = styled.div`
   
 `
 
-const LeftDiv=styled.div`
+const LeftDiv = styled.div`
     display:flex;
     flex-direction:column;
     height:100vh;
@@ -67,35 +78,46 @@ class Shell extends Component {
     //     return false;
     // }
 
-    renderChilds(){
-        let a=[];
-        for(let i=0;i<100;i++){
+    renderChilds() {
+        let a = [];
+        for (let i = 0; i < 100; i++) {
             a.push(i);
         }
         return <div>
-                {a.map(x=><div>{x}</div>)}
-            </div>
+            {a.map(x => <div>{x}</div>)}
+        </div>
     }
 
     render() {
-        return <ShellDiv>
+        return    <Router>
+        <ShellDiv>
             <LeftDiv>
                 <TitleDiv>
-                    <TitleBar/>
-                   
+                    <TitleBar />
+
                 </TitleDiv>
-                <UserPanel/>
+                <UserPanel />
                 <NavigateDiv>
-                    <NavigateBar/>
-                 </NavigateDiv>
+                    <NavigateBar />
+                </NavigateDiv>
             </LeftDiv>
-            
+
             <ContainerDiv>
-                <MyAppBar/>
-                <BodyDiv>{this.renderChilds()}</BodyDiv>
+                <MyAppBar />
+                <BodyDiv>
+                 
+                        <Switch>
+
+                            <Route path={routeUrls.TASK_ADD_UPDATE} component={Task} />
+                            <Route path={routeUrls.TASK_LIST} component={TaskList} />
+                        </Switch>
+                    
+
+                </BodyDiv>
             </ContainerDiv>
-            
+
         </ShellDiv>
+        </Router>
     }
 }
 

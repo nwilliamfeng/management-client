@@ -11,6 +11,14 @@ import { faTable, faEdit, faUser, faTasks, faMoneyBill, faUserFriends, faCircle 
 import styled from 'styled-components'
 import { routeUrls } from '../constants'
 
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    NavLink,
+    Link
+} from 'react-router-dom'
+
 
 const styles = theme => ({
     root: {
@@ -49,8 +57,17 @@ const ItemIcon = styled(FontAwesomeIcon)`
     font-size:15px;
 `
 
+// const NavigateSubItem = ({ item }) => {
+//     return <ListItem button onClick={() => item.handleClick(item.url)}>
+//         <ItemDiv style={{ marginLeft: 20 }}>
+//             <ItemIcon icon={faCircle} style={{ color: 'lightgray', fontSize: 1, marginTop: 5 }} />
+//             {item.title}
+//         </ItemDiv>
+//     </ListItem>
+// }
+
 const NavigateSubItem = ({ item }) => {
-    return <ListItem button onClick={() => item.handleClick(item.url)}>
+    return <ListItem button component={Link} to={item.url}>
         <ItemDiv style={{ marginLeft: 20 }}>
             <ItemIcon icon={faCircle} style={{ color: 'lightgray', fontSize: 1, marginTop: 5 }} />
             {item.title}
@@ -145,9 +162,10 @@ class NavigateBar extends React.Component {
                     subItems={this.subItems.filter(x => x.category === categories.TASK_MANAGE)} />
                 <ModuleListItem icon={faMoneyBill} title={'卡券支付管理'} isDropdown={this.state.isCardPayManageItemOpen} dropDownHandle={this.handleCardPayManageItemDropdwon}
                     subItems={this.subItems.filter(x => x.category === categories.CARD_PAY_MANAGE)} />
-                <ModuleListItem icon={faMoneyBill} title={'系统用户管理'} isDropdown={this.state.isSystemUserManageItemOpen} dropDownHandle={this.handleSystemUserManageItemDropdwon}
+                <ModuleListItem icon={faUser} title={'系统用户管理'} isDropdown={this.state.isSystemUserManageItemOpen} dropDownHandle={this.handleSystemUserManageItemDropdwon}
                     subItems={this.subItems.filter(x => x.category === categories.SYS_USER_MANAGE)} />
             </List>
+
         );
     }
 }
