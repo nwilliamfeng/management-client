@@ -11,13 +11,7 @@ import { faTable, faEdit, faUser, faTasks, faMoneyBill, faUserFriends, faCircle 
 import styled from 'styled-components'
 import { routeUrls } from '../constants'
 
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    NavLink,
-    Link
-} from 'react-router-dom'
+import { Link} from 'react-router-dom'
 
 
 const styles = theme => ({
@@ -57,15 +51,6 @@ const ItemIcon = styled(FontAwesomeIcon)`
     font-size:15px;
 `
 
-// const NavigateSubItem = ({ item }) => {
-//     return <ListItem button onClick={() => item.handleClick(item.url)}>
-//         <ItemDiv style={{ marginLeft: 20 }}>
-//             <ItemIcon icon={faCircle} style={{ color: 'lightgray', fontSize: 1, marginTop: 5 }} />
-//             {item.title}
-//         </ItemDiv>
-//     </ListItem>
-// }
-
 const NavigateSubItem = ({ item }) => {
     return <ListItem button component={Link} to={item.url}>
         <ItemDiv style={{ marginLeft: 20 }}>
@@ -90,7 +75,7 @@ const ModuleListItem = ({ icon, title, isDropdown, dropDownHandle, subItems }) =
     <NavigateDropdownItem icon={icon} title={title} isDropdown={isDropdown} dropDownHandle={dropDownHandle} />
     <Collapse in={isDropdown} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-            {subItems ? subItems.map(x => <NavigateSubItem item={x} />) : <div />}
+            {subItems ? subItems.map(x => <NavigateSubItem key={x.url} item={x} />) : <div />}
         </List>
     </Collapse>
 </React.Fragment>
@@ -122,27 +107,25 @@ class NavigateBar extends React.Component {
 
     handleSystemUserManageItemDropdwon = () => this.setState(state => ({ isSystemUserManageItemOpen: !state.isSystemUserManageItemOpen }));
 
-    handleSubItemClick = url => alert(url);
-
-    handleMyClick = url => alert(url);
+     
 
     subItems = [
-        { category: categories.DATA_SUM, url: routeUrls.DAY_REPORT, title: '数据大盘(日报表)', handleClick: this.handleMyClick },
-        { category: categories.DATA_SUM, url: routeUrls.MONTH_REPORT, title: '月报表', handleClick: this.handleMyClick },
-        { category: categories.DATA_SUM, url: routeUrls.CLEAR_DATA, title: '积分卡券每日统计', handleClick: this.handleMyClick },
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_LIST, title: '卡券配置列表', handleClick: this.handleMyClick },
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_STRATEGY, title: '卡券策略管理', handleClick: this.handleMyClick },
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_ADD_UPDATE, title: '卡券添加', handleClick: this.handleMyClick },
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_STRATEGY_ADD_UPDATE, title: '卡券策略添加', handleClick: this.handleMyClick },
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_CHECK_OP, title: '待复核列表', handleClick: this.handleMyClick },
-        { category: categories.USER_MANAGE, url: routeUrls.USER_LIST, title: '用户列表', handleClick: this.handleMyClick },
-        { category: categories.USER_MANAGE, url: routeUrls.USER_POINT_FLOW, title: '用户积分变动', handleClick: this.handleMyClick },
-        { category: categories.USER_MANAGE, url: routeUrls.USER_CARD_LIST, title: '用户卡券列表', handleClick: this.handleMyClick },
-        { category: categories.TASK_MANAGE, url: routeUrls.TASK_LIST, title: '任务列表', handleClick: this.handleMyClick },
-        { category: categories.TASK_MANAGE, url: routeUrls.TASK_ADD_UPDATE, title: '添加任务', handleClick: this.handleMyClick },
-        { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_USERGIFT_FREEZING, title: '卡券冻结列表', handleClick: this.handleMyClick },
-        { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_APP_LST, title: '卡券支付列表', handleClick: this.handleMyClick },
-        { category: categories.SYS_USER_MANAGE, url: routeUrls.LOGIN_INFO_DETAIL, title: '权限管理', handleClick: this.handleMyClick },
+        { category: categories.DATA_SUM, url: routeUrls.DAY_REPORT, title: '数据大盘(日报表)' },
+        { category: categories.DATA_SUM, url: routeUrls.MONTH_REPORT, title: '月报表' },
+        { category: categories.DATA_SUM, url: routeUrls.CLEAR_DATA, title: '积分卡券每日统计'},
+        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_LIST, title: '卡券配置列表' },
+        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_STRATEGY, title: '卡券策略管理'},
+        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_ADD_UPDATE, title: '卡券添加' },
+        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_STRATEGY_ADD_UPDATE, title: '卡券策略添加' },
+        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_CHECK_OP, title: '待复核列表' },
+        { category: categories.USER_MANAGE, url: routeUrls.USER_LIST, title: '用户列表' },
+        { category: categories.USER_MANAGE, url: routeUrls.USER_POINT_FLOW, title: '用户积分变动' },
+        { category: categories.USER_MANAGE, url: routeUrls.USER_CARD_LIST, title: '用户卡券列表' },
+        { category: categories.TASK_MANAGE, url: routeUrls.TASK_LIST, title: '任务列表' },
+        { category: categories.TASK_MANAGE, url: routeUrls.TASK_ADD_UPDATE, title: '添加任务' },
+        { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_USERGIFT_FREEZING, title: '卡券冻结列表' },
+        { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_APP_LST, title: '卡券支付列表' },
+        { category: categories.SYS_USER_MANAGE, url: routeUrls.LOGIN_INFO_DETAIL, title: '权限管理'},
 
     ];
 

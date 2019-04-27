@@ -166,7 +166,7 @@ class MyAppBar extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar style={{background:'#EDEDED'}}>
-            <IconButton className={classes.menuButton} color="#2A3F54" aria-label="Open drawer">
+            <IconButton className={classes.menuButton}  aria-label="Open drawer">
               <MenuIcon />
             </IconButton>
             {/* <Typography className={classes.title} variant="h6" color="inherit" noWrap>
@@ -186,7 +186,7 @@ class MyAppBar extends React.Component {
             </div> */}
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
-              <IconButton color="gray">
+              <IconButton >
                 <Badge badgeContent={4} color="primary">
                   <MailIcon />
                 </Badge>

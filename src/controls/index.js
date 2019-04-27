@@ -1,4 +1,5 @@
 
-export * from './withScroll';
-export * from './parts'   ;
+ 
+export * from './parts'   
+export * from './withHeader'
 
