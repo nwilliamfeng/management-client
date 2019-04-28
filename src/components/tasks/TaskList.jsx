@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 
 class TaskList extends Component {
     render() {
-        console.log(this.props);
+        
         return <div>
             {'tasklist'}
         </div>
