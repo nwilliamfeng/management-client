@@ -26,9 +26,27 @@ class Task extends Component {
 
     constructor(props) {
         super(props);
-        this.state={value:{name:'abcd',platformID:0}}; 
+        this.state={value:null,tagIds:[]}; 
          
     }
+
+    onChangeParameter =(selected) =>{
+      console.log(selected);
+      
+      this.setState({value:{...selected}});
+    //      let x=this.state.value;
+    //       x.platformID=this.platformIDSelect.value;
+    //   this.setState({value:{...x}})
+      
+        // setFieldValue('platformID', selected)
+        // if(selected.value==='全部平台'){
+          
+        //     this.setState({tagIds:[1,2,3]})
+        // }
+        // else
+        // this.setState({tagIds:[]})
+        
+      }  
 
     componentDidMount() {
         const { dispatch } = this.props;
@@ -65,14 +83,14 @@ class Task extends Component {
     }
 
     render() {
-        console.log(this.props); //this.props.location.search -- ?id=abc
+      //  console.log(this.props); //this.props.location.search -- ?id=abc
         const {dispatch} =this.props;
         const {value} =this.state;
         console.log('do render');
-        console.log(value);
+       // console.log(value);
         return <Page title={this.needCreate() ? '添加任务' : this.props.location.search} {...this.props} >
             <Formik
-           
+           enableReinitialize={true}
                 initialValues={value}
                
                 validationSchema={validationSchema}
@@ -80,19 +98,21 @@ class Task extends Component {
                     console.log(values);
                    // dispatch(dbActions.addKey(connectionName, dbIdx, dbId, values.type, values.id, values.key, values.value));
                 }}
-                render={({ values, errors , isSubmitting ,attachMessage}) => (<div style={{ padding: 10 }}>
+                render={({ values, errors , isSubmitting ,attachMessage,setFieldValue}) => (<div style={{ padding: 10 }}>
                     <Form>
-                        <FormField component="select" fieldName="platformID" displyName="平台类型" width={100} onChange={this.handleChange}>
+                        <FormField component="select" fieldName="platformID" displyName="平台类型" width={100} 
+                      onChange={ this.onChangeParameter }>
                             <option value={-1}>--未选择--</option>
                             <option value={0}>全部平台</option>
                             <option value={1}>基金</option>
                             <option value={2}>证券</option>             
                         </FormField>
                         <FormField component="select" fieldName="tagId" displyName="任务标签" width={100}>
-                            <option value={-1}>--未选择--</option>
+                        {this.state.tagIds && this.state.tagIds.map(x=><option value={x}>{x}</option>)}
+                            {/* <option value={-1}>--未选择--</option>
                             <option value={0}>推荐任务</option>
                             <option value={1}>新手任务</option>
-                            <option value={2}>日常任务</option>             
+                            <option value={2}>日常任务</option>              */}
                         </FormField>
                         <FormField fieldName="name" displyName="任务名称" errors={errors} />
                         {(Number.parseInt(values.type) === 2 || Number.parseInt(values.type) === 4) && <FormField fieldName="key" displyName={Number.parseInt(values.type) === 2 ? 'Key' : 'Score'} errors={errors} />}
