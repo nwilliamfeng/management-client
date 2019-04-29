@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
  
 import store from './store';
 import {Provider} from 'react-redux';
-import 'bootstrap/dist/css/bootstrap.css';
+//import 'bootstrap/dist/css/bootstrap.css';
 // require('../assets/styles/scrollbar.css')
 require('./assets/styles/scrollbar.css')
 
