@@ -8,6 +8,7 @@ const Container = styled.div`
     flex-direction:column;
     flex:0 100%;
     align-self:left;
+
   
 `
 const HeaderDiv = styled.div`
@@ -16,6 +17,10 @@ const HeaderDiv = styled.div`
 `
 
 const BodyDiv = styled.div`
+
+overflow-y:auto;
+    width:100%;
+    height:100vh;
     background:white;
     width:100;
     margin-top:15px;

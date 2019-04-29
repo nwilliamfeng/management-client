@@ -15,13 +15,11 @@ const ShellDiv = styled.div`
 
 const TitleDiv = styled.div`
     height:70px;
-    width:100%;
-   
+    width:100%; 
     display:flex;
     justify-content:center;
     flex-direction:column;
 `
-
 
 const NavigateDiv = styled.div`
     overflow-y:auto;
@@ -53,7 +51,6 @@ const ContainerDiv = styled.div`
    flex-direction:column;
    display:flex;
    background: lightgray;
-    
    width:100%;
    height:100vh;
   
@@ -84,7 +81,7 @@ class Shell extends Component {
                         <TitleBar />
                     </TitleDiv>
                     <UserPanel />
-                    <NavigateDiv>
+                    <NavigateDiv className='scollContainer'>
                         <NavigateBar />
                     </NavigateDiv>
                 </LeftDiv>

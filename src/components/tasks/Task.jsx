@@ -4,17 +4,19 @@ import { connect } from 'react-redux'
 import { withHeader } from '../../controls'
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { FormField } from '../../controls'
+import { FormField,RadioFormField } from '../../controls'
 import { taskActions } from '../../actions'
-import {SubmitButton,ResetButton} from '../../controls'
+import { SubmitButton, ResetButton } from '../../controls'
+import { isBoolean, isDate } from 'util';
 
 /**
  * 验证模板
  */
 const validationSchema = Yup.object().shape({
 
-    id: Yup.string().required('Id不能为空。'),
-    value: Yup.string().required('value不能为空。'),
+    platformID: Yup.string().required('平台类型不能为空。'),
+    tagId: Yup.number().notOneOf([0],'任务标签不能为空。'),
+    name: Yup.string().required('任务名称不能为空。'),
 })
 
 
@@ -26,27 +28,15 @@ class Task extends Component {
 
     constructor(props) {
         super(props);
-        this.state={value:null,tagIds:[]}; 
-         
+        this.state = { task: null, tagIds: [], platforms: [], taskTags: [] };
+
     }
 
-    onChangeParameter =(selected) =>{
-      console.log(selected);
-      
-      this.setState({value:{...selected}});
-    //      let x=this.state.value;
-    //       x.platformID=this.platformIDSelect.value;
-    //   this.setState({value:{...x}})
-      
-        // setFieldValue('platformID', selected)
-        // if(selected.value==='全部平台'){
-          
-        //     this.setState({tagIds:[1,2,3]})
-        // }
-        // else
-        // this.setState({tagIds:[]})
-        
-      }  
+    onChangePlatform = (e) => {
+    
+        const ptmid = parseInt(e.target.value);
+        this.setState({ task: { ...this.state.task, platformID: ptmid, tagId: 0 } });
+    }
 
     componentDidMount() {
         const { dispatch } = this.props;
@@ -55,69 +45,83 @@ class Task extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState, nextContext){
-        return true;
-    }
-
     componentWillReceiveProps(nextProps, nextContext) {
-        const { currentTask } = nextProps;
-        if(currentTask!=null && this.state.value==null){
-            
-            console.log('do set');
-            this.setState({value:currentTask});
-        }
-        else{
-            console.log(this.state.value);
+        if (nextProps != null) {
+            const { currentTask, platforms, taskTags } = nextProps;
+            this.setState({ task: currentTask, platforms, taskTags });
         }
     }
 
-    needCreate = () => this.props.location.search === '';
+    needCreate = () => this.props.location.search === ''; //  console.log(this.props); //this.props.location.search -- ?id=abc
 
-    onPlatFormTypeChange=e=>{
-       // console.log(e);
-     
-    }
-
-    handleChange=(e,t)=>{
-        console.log(e);
+    handlePropertyChange = (e) => {
+        let task = { ...this.state.task };
+        let value = e.target.value;     
+      const s=new Date('2017-12-13');
+      console.log(s);
+        const propName = `${e.target.name}`;
+        console.log(task[propName]);
+        //这里需要加判断，如果是其他类型的话也需要转换
+        if (task[propName] === parseInt(task[propName])) {
+            task[propName] = parseInt(value);
+        }
+        else if (isBoolean(task[propName])) {
+            task[propName] =JSON.parse(value);
+        }
+        else if (isDate(task[propName])) {
+            console.log('sdf');
+            task[propName] =new Date(value);
+        }
+        else {
+            task[propName] = value;
+        }
+        this.setState({ task });
     }
 
     render() {
-      //  console.log(this.props); //this.props.location.search -- ?id=abc
-        const {dispatch} =this.props;
-        const {value} =this.state;
-        console.log('do render');
-       // console.log(value);
+        const { dispatch } = this.props;
+        const { task, platforms, taskTags } = this.state;
         return <Page title={this.needCreate() ? '添加任务' : this.props.location.search} {...this.props} >
             <Formik
-           enableReinitialize={true}
-                initialValues={value}
-               
+                initialValues={task}
+                enableReinitialize={true}
                 validationSchema={validationSchema}
                 onSubmit={values => {
                     console.log(values);
-                   // dispatch(dbActions.addKey(connectionName, dbIdx, dbId, values.type, values.id, values.key, values.value));
+                     dispatch(taskActions.addTask(values));
                 }}
-                render={({ values, errors , isSubmitting ,attachMessage,setFieldValue}) => (<div style={{ padding: 10 }}>
+                render={({ values, errors, isSubmitting, attachMessage, setFieldValue }) => (<div style={{ padding: 10 }}>
                     <Form>
-                        <FormField component="select" fieldName="platformID" displyName="平台类型" width={100} 
-                      onChange={ this.onChangeParameter }>
+                        <FormField component="select" fieldName="platformID" displyName="平台类型" width={100} onChange={this.onChangePlatform}>
                             <option value={-1}>--未选择--</option>
-                            <option value={0}>全部平台</option>
-                            <option value={1}>基金</option>
-                            <option value={2}>证券</option>             
+                            {platforms && platforms.map(x => <option key={x.platformID} value={x.platformID}>{x.name}</option>)}
                         </FormField>
-                        <FormField component="select" fieldName="tagId" displyName="任务标签" width={100}>
-                        {this.state.tagIds && this.state.tagIds.map(x=><option value={x}>{x}</option>)}
-                            {/* <option value={-1}>--未选择--</option>
-                            <option value={0}>推荐任务</option>
-                            <option value={1}>新手任务</option>
-                            <option value={2}>日常任务</option>              */}
+                        <FormField component="select" fieldName="tagId" displyName="任务标签" width={100} onChange={this.handlePropertyChange}>
+                            <option value={0}>--未选择--</option>
+                            {taskTags && taskTags.filter(x => x.platformID === task.platformID).sort(x => x.tagSequence).map(x => <option key={x.id} value={x.id}>{x.tagName}</option>)}
                         </FormField>
-                        <FormField fieldName="name" displyName="任务名称" errors={errors} />
-                        {(Number.parseInt(values.type) === 2 || Number.parseInt(values.type) === 4) && <FormField fieldName="key" displyName={Number.parseInt(values.type) === 2 ? 'Key' : 'Score'} errors={errors} />}
-                        <FormField component="textarea" fieldName="value" displyName="Value" errors={errors} height={150} />
-                        {attachMessage && <div style={{ color: 'red' }}>{attachMessage}</div>}
+                        <FormField fieldName="name" displyName="任务名称" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="taskIconUrl" displyName="任务图标URL" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="taskUrl" displyName="任务跳转地址" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="taskButtonText" displyName="领取后按钮文案" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="taskSort" displyName="任务序号" errors={errors} onChange={this.handlePropertyChange} />
+                        <RadioFormField  fieldName="isNeedGet" displyName="是否需要领取任务" errors={errors} onChange={this.handlePropertyChange} items={[{name:'是',value:true},{name:'否',value:false}]}/>
+                        <RadioFormField  fieldName="isEnabled" displyName="是否有效" errors={errors} onChange={this.handlePropertyChange} items={[{name:'是',value:true},{name:'否',value:false}]}/>
+                        <FormField fieldName="taskExpireDays" displyName="任务领取后有效天数" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="groupName" displyName="组群名称" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="point" displyName="发放积分" errors={errors} onChange={this.handlePropertyChange} />
+                        
+                        <FormField fieldName="beginTime" type={'date'} displyName="任务开始时间" width={300} errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="endTime" type={'date'} displyName="任务结束时间" width={300} errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="dayTimes" displyName="单用户单日可兑换" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="totalTimes" displyName="单用户累计可兑换" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="dayLimit" displyName="每日可兑换" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="totalLimit" displyName="总发放张数" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="taskMinPoint" displyName="任务的最小积分" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="taskMaxPoint" displyName="任务的最大积分" errors={errors} onChange={this.handlePropertyChange} />
+                        <FormField fieldName="description" displyName="任务描述" errors={errors} onChange={this.handlePropertyChange} />
+                        
+                        {/* {attachMessage && <div style={{ color: 'red' }}>{attachMessage}</div>} */}
                         <SubmitButton disabled={isSubmitting && attachMessage == null} />
                         <ResetButton disabled={isSubmitting && attachMessage == null} />
                     </Form>
