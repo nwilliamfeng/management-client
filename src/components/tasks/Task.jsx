@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { ChipList, withHeader } from '../../controls'
+import { ChipList, withHeader, FormField } from '../../controls'
 import styled from 'styled-components'
 import * as Yup from 'yup';
-import { FormField } from '../../controls'
+import { FormSelect } from '../../controls'
 import { taskActions } from '../../actions'
 import { SubmitButton, ResetButton } from '../../controls'
 import { isBoolean, isDate } from 'util';
 
+
 import { Formik, Field, Form } from 'formik';
 import {
-    
+    InputLabel,
+    FormControl,
     MenuItem,
     TextField,
     Select,
-   
-    withStyles,
+    FormHelperText,
 } from '@material-ui/core';
 
 
@@ -27,31 +28,14 @@ const RowDiv = styled.div`
     
 `
 
-const styles = theme => ({
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
-    textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
-        width: 200,
-    },
-    dense: {
-        marginTop: 19,
-    },
-    menu: {
-        width: 200,
-    },
-});
 
 /**
  * 验证模板
  */
 const validationSchema = Yup.object().shape({
 
-    // platformID: Yup.string().required('平台类型不能为空。'),
-    // tagId: Yup.number().notOneOf([0], '任务标签不能为空。'),
+    platformID: Yup.string().required('平台类型不能为空。'),
+    tagId: Yup.number().notOneOf([0], '任务标签不能为空。'),
     name: Yup.string().required('任务名称不能为空。'),
 })
 
@@ -129,25 +113,44 @@ class Task extends Component {
                 }}
                 render={({ values, errors, isSubmitting, attachMessage, touched, }) => (<div>
                     {/* <ChipList/> */}
-                    <Form className={classes.container}>
+                    <Form  >
                         {/* <FormField component="select" fieldName="platformID" displyName="平台类型" width={100} onChange={this.onChangePlatform}>
                             <option value={-1}>--未选择--</option>
                             {platforms && platforms.map(x => <option key={x.platformID} value={x.platformID}>{x.name}</option>)}
                         </FormField> */}
                         <RowDiv>
-                            <Select
+
+                            {/* <FormControl >
+                                <InputLabel shrink={true}  >平台类型</InputLabel>
+                                <Select name="platformID" value={task ? task.platformID : null} onChange={this.onChangePlatform}  >
+                                    {platforms && platforms.map(x => <MenuItem key={x.platformID} value={x.platformID}>{x.name}</MenuItem>)}
+                                </Select>
+                            </FormControl> */}
+
+                            <FormSelect style={{ width: 120 }}
                                 name="platformID"
-                                inputProps={{
-                                    name: 'age',
-                                    id: 'age-native-simple',
-                                  }}
-                                onChange={this.handleChange}
-       
-                            >
-                             {platforms && platforms.map(x => <MenuItem key={x.platformID} value={x.platformID}>{x.name}</MenuItem>)}
-                             
-                            </Select>
+                                value={task ? task.platformID : null}
+                                errors={errors}
+                                label={'平台类型'}
+                                onChange={this.onChangePlatform}>
+                                {platforms && platforms.map(x => <MenuItem key={x.platformID} value={x.platformID}>{x.name}</MenuItem>)}
+                            </FormSelect>
+
+
+
+
                         </RowDiv>
+
+                        <FormSelect style={{ width: 100 }}
+                            name="tagId"
+                            value={task ? task.tagId : 0}
+                            errors={errors}
+                            label={'任务标签'}
+                            shrink={task?task.tagId!==0:false}
+                            onChange={this.handlePropertyChange}>
+                            {taskTags && taskTags.filter(x => x.platformID === task.platformID).sort(x => x.tagSequence).map(x => <MenuItem key={x.id} value={x.id}>{x.tagName}</MenuItem>)}
+                        </FormSelect>
+
 
                         <TextField name="name" label="任务名称" error={touched.name && Boolean(errors.name)} helperText={touched.name ? errors.name : ""} onChange={this.handlePropertyChange} />
 
@@ -223,6 +226,6 @@ const mapStateToProps = (state) => {
     return { ...state.location, ...state.task };
 }
 
-const task = withRouter(connect(mapStateToProps)(withStyles(styles)(Task)));
+const task = withRouter(connect(mapStateToProps)(Task));
 
 export { task as Task };

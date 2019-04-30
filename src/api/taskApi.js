@@ -9,6 +9,7 @@ class TaskApi {
 
     async createTask(){
         const result = await ApiHelper.get('/task/getdefaulttask');
+        result.name='';
         result.beginTime=moment().format('YYYY-MM-DD');
         result.endTime=moment().format('YYYY-MM-DD');
         result.createTime=moment().format('YYYY-MM-DD');
