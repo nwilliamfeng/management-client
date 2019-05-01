@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { ChipList, withHeader, FormField } from '../../controls'
+import { ChipList, withHeader, FormSelectField, FormTextField, FormRadioGroupField, FormDatePickerField, withGridItem } from '../../controls'
 import styled from 'styled-components'
 import * as Yup from 'yup';
-import { FormSelect } from '../../controls'
 import { taskActions } from '../../actions'
 import { SubmitButton, ResetButton } from '../../controls'
 import { isBoolean, isDate } from 'util';
@@ -12,22 +11,23 @@ import { isBoolean, isDate } from 'util';
 
 import { Formik, Field, Form } from 'formik';
 import {
+    Grid,
+    Paper,
     InputLabel,
     FormControl,
     MenuItem,
     TextField,
+    FormControlLabel,
+    RadioGroup,
+    Radio,
+    FormLabel,
     Select,
     FormHelperText,
 } from '@material-ui/core';
 
 
-
-const RowDiv = styled.div`
-    display:flex;
-    margin-bottom:10px;
-    
-`
-
+const MyTextField=withGridItem(FormTextField)
+ 
 
 /**
  * 验证模板
@@ -35,9 +35,10 @@ const RowDiv = styled.div`
 const validationSchema = Yup.object().shape({
 
     platformID: Yup.string().required('平台类型不能为空。'),
-    tagId: Yup.number().notOneOf([0], '任务标签不能为空。'),
+    tagId: Yup.number().notOneOf([0], '请选择任务标签。'),
     name: Yup.string().required('任务名称不能为空。'),
 })
+
 
 
 const Page = withHeader(props => <React.Fragment>
@@ -53,9 +54,7 @@ class Task extends Component {
     }
 
     onChangePlatform = (e) => {
-
         const ptmid = parseInt(e.target.value);
-        console.log(ptmid)
         this.setState({ task: { ...this.state.task, platformID: ptmid, tagId: 0 } });
     }
 
@@ -75,24 +74,25 @@ class Task extends Component {
 
     needCreate = () => this.props.location.search === ''; //  console.log(this.props); //this.props.location.search -- ?id=abc
 
-    handlePropertyChange = (e) => {
+    onPropertyChange = (e) => {
         let task = { ...this.state.task };
         let value = e.target.value;
 
         const propName = `${e.target.name}`;
-        console.log(task);
         //这里需要加判断，如果是其他类型的话也需要转换
         if (task[propName] === parseInt(task[propName])) {
             task[propName] = parseInt(value);
         }
         else if (isBoolean(task[propName])) {
+            console.log('ddd');
             task[propName] = JSON.parse(value);
         }
         else if (isDate(task[propName])) {
+
             task[propName] = new Date(value);
         }
         else {
-
+            console.log(value);
             task[propName] = value;
 
         }
@@ -100,7 +100,7 @@ class Task extends Component {
     }
 
     render() {
-        const { dispatch, classes } = this.props;
+        const { dispatch } = this.props;
         const { task, platforms, taskTags } = this.state;
         return <Page title={this.needCreate() ? '添加任务' : this.props.location.search} {...this.props} >
             <Formik
@@ -113,65 +113,70 @@ class Task extends Component {
                 }}
                 render={({ values, errors, isSubmitting, attachMessage, touched, }) => (<div>
                     {/* <ChipList/> */}
-                    <Form  >
-                        {/* <FormField component="select" fieldName="platformID" displyName="平台类型" width={100} onChange={this.onChangePlatform}>
-                            <option value={-1}>--未选择--</option>
-                            {platforms && platforms.map(x => <option key={x.platformID} value={x.platformID}>{x.name}</option>)}
-                        </FormField> */}
-                        <RowDiv>
+                    <Form>
+                        <Grid container spacing={12} direction="column">
+                            <Grid item  >
+                                <Grid container spacing={40}  >
+                                    <Grid item>
+                                        <FormSelectField style={{ width: 120 }}
+                                            name="platformID"
+                                            value={task ? task.platformID : -1}
+                                            errors={errors}
+                                            label={'平台类型'}
+                                            onChange={this.onChangePlatform}>
+                                            {platforms && platforms.map(x => <MenuItem key={x.platformID} value={x.platformID}>{x.name}</MenuItem>)}
+                                        </FormSelectField>
+                                    </Grid>
+                                    <Grid item>
+                                        <FormSelectField style={{ width: 100 }}
+                                            name="tagId"
+                                            value={task ? task.tagId : 0}
+                                            errors={errors}
+                                            label={'任务标签'}
+                                            shrink={task ? task.tagId !== 0 : false}
+                                            onChange={this.onPropertyChange}>
+                                            {taskTags && taskTags.filter(x => x.platformID === task.platformID).sort(x => x.tagSequence).map(x => <MenuItem key={x.id} value={x.id}>{x.tagName}</MenuItem>)}
+                                        </FormSelectField>
+                                    </Grid>
+                                    
+                                        <MyTextField name="name" label="任务名称" errors={errors} onChange={this.onPropertyChange} />
+                                     
+                                </Grid>
+                            </Grid>
+                            <Grid item  >
+                                <Grid container spacing={40}>
+                                    <Grid item>
+                                        <FormTextField name="taskIconUrl" label="任务图标URL" errors={errors} onChange={this.handlePropertyChange} />
+                                    </Grid>
+                                    <Grid item>
+                                        <FormTextField name="taskUrl" label="任务跳转地址" errors={errors} onChange={this.handlePropertyChange} />
+                                    </Grid>
+                                    <Grid item>
+                                        <FormTextField name="taskButtonText" label="领取后按钮文案" errors={errors} onChange={this.handlePropertyChange} />
+                                    </Grid>
+                                   
+                                        <MyTextField name="taskSort" label="任务序号" errors={errors} onChange={this.handlePropertyChange} />
+                                   
 
-                            {/* <FormControl >
-                                <InputLabel shrink={true}  >平台类型</InputLabel>
-                                <Select name="platformID" value={task ? task.platformID : null} onChange={this.onChangePlatform}  >
-                                    {platforms && platforms.map(x => <MenuItem key={x.platformID} value={x.platformID}>{x.name}</MenuItem>)}
-                                </Select>
-                            </FormControl> */}
+                                </Grid>
+                            </Grid>
 
-                            <FormSelect style={{ width: 120 }}
-                                name="platformID"
-                                value={task ? task.platformID : null}
-                                errors={errors}
-                                label={'平台类型'}
-                                onChange={this.onChangePlatform}>
-                                {platforms && platforms.map(x => <MenuItem key={x.platformID} value={x.platformID}>{x.name}</MenuItem>)}
-                            </FormSelect>
+                        </Grid>
 
 
 
 
-                        </RowDiv>
-
-                        <FormSelect style={{ width: 100 }}
-                            name="tagId"
-                            value={task ? task.tagId : 0}
-                            errors={errors}
-                            label={'任务标签'}
-                            shrink={task?task.tagId!==0:false}
-                            onChange={this.handlePropertyChange}>
-                            {taskTags && taskTags.filter(x => x.platformID === task.platformID).sort(x => x.tagSequence).map(x => <MenuItem key={x.id} value={x.id}>{x.tagName}</MenuItem>)}
-                        </FormSelect>
 
 
-                        <TextField name="name" label="任务名称" error={touched.name && Boolean(errors.name)} helperText={touched.name ? errors.name : ""} onChange={this.handlePropertyChange} />
+                        <FormDatePickerField onChange={this.onPropertyChange} label="任务开始时间" value={task ? task.beginDate : ''} />
 
+                        <FormRadioGroupField name="isEnabled"
+                            items={[{ name: '是', value: true }, { name: '否', value: false }]}
+                            value={task ? task.isEnabled : false}
+                            label="是否有效"
+                            onChange={this.onPropertyChange}
+                        />
 
-
-                        {/* <Field name="platformID" label="平台类型" style={{minWidth:100}}   component={Select} InputLabelProps={{ shrink: true, }} onChange={e=>console.log(e)}>
-                                {platforms && platforms.map(x => (<MenuItem key={x.platformID} value={x.platformID}>{x.name}</MenuItem>))}
-                            </Field> */}
-
-
-                        {/* <FormField component="select" fieldName="tagId" displyName="任务标签" width={100} onChange={this.handlePropertyChange}>
-                            <option value={0}>--未选择--</option>
-                            {taskTags && taskTags.filter(x => x.platformID === task.platformID).sort(x => x.tagSequence).map(x => <option key={x.id} value={x.id}>{x.tagName}</option>)}
-                        </FormField> */}
-
-                        {/* <RadioFormField   fieldName="isNeedGet" displyName="是否需要领取任务" errors={errors} onChange={this.handlePropertyChange} items={[{name:'是',value:true},{name:'否',value:false}]}/>
-                      
-                        <FormField fieldName="beginTime" type={'date'} displyName="任务开始时间" width={300} errors={errors} onChange={this.handlePropertyChange} />
-                        <FormField fieldName="endTime" type={'date'} displyName="任务结束时间" width={300} errors={errors} onChange={this.handlePropertyChange} />
-                      
-                        */}
                         <SubmitButton disabled={isSubmitting && attachMessage == null} />
                         <ResetButton disabled={isSubmitting && attachMessage == null} />
                     </Form>
@@ -185,15 +190,8 @@ class Task extends Component {
 
 // render={({ values, errors, isSubmitting, attachMessage, setFieldValue }) => (<div style={{ padding: 10 }}>
 //     <Form>
-//         <FormField component="select" fieldName="platformID" displyName="平台类型" width={100} onChange={this.onChangePlatform}>
-//             <option value={-1}>--未选择--</option>
-//             {platforms && platforms.map(x => <option key={x.platformID} value={x.platformID}>{x.name}</option>)}
-//         </FormField>
-//         <FormField component="select" fieldName="tagId" displyName="任务标签" width={100} onChange={this.handlePropertyChange}>
-//             <option value={0}>--未选择--</option>
-//             {taskTags && taskTags.filter(x => x.platformID === task.platformID).sort(x => x.tagSequence).map(x => <option key={x.id} value={x.id}>{x.tagName}</option>)}
-//         </FormField>
-//         <FormField fieldName="name" displyName="任务名称" errors={errors} onChange={this.handlePropertyChange} />
+//        
+//         
 //         <FormField fieldName="taskIconUrl" displyName="任务图标URL" errors={errors} onChange={this.handlePropertyChange} />
 //         <FormField fieldName="taskUrl" displyName="任务跳转地址" errors={errors} onChange={this.handlePropertyChange} />
 //         <FormField fieldName="taskButtonText" displyName="领取后按钮文案" errors={errors} onChange={this.handlePropertyChange} />
