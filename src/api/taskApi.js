@@ -5,6 +5,7 @@ class TaskApi {
 
     async loadTasks(pageIndex=1,pageSize=10) {
         const result = await ApiHelper.get(`/task/loadTasks?pageIndex=${pageIndex}&pageSize=${pageSize}`);
+       // console.log(result);
         return result;
     }
 

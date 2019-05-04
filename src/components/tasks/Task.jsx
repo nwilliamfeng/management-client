@@ -7,7 +7,7 @@ import { isBoolean, isDate } from 'util';
 import { Formik } from 'formik';
 import { Grid, MenuItem, } from '@material-ui/core';
 import { GridTextAreaField, GridDatePickerField, GridRadioGroupField, GridTextField, GridSelectField, GridRow, FormContainer } from '../helper'
-import {AlertDialog} from '../AlertDialog'
+import {Dialog } from '../../controls'
 
 /**
  * 验证模板
@@ -28,7 +28,7 @@ class Task extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { task: null, tagIds: [], platforms: [], taskTags: [],alertMessage:null };
+        this.state = { task: null, tagIds: [], platforms: [], taskTags: []};
     }
 
     onChangePlatform = (e) => {
@@ -40,6 +40,10 @@ class Task extends Component {
         const { dispatch } = this.props;
         if (this.needCreate()) {
             dispatch(taskActions.createTask());
+        }
+        else {
+            const taskId =this.props.location.search.replace('?taskId=','');
+            console.log(taskId);??
         }
     }
 
@@ -72,16 +76,13 @@ class Task extends Component {
         this.setState({ task });
     }
 
-    onAlertDialogClose=e=>{
-        console.log('aaaa');
-        this.setState({alertMessage:null});
-    }
-
+     
     render() {
+        console.log('render');
         const { dispatch } = this.props;
-        const { task, platforms, taskTags ,alertMessage} = this.state;
-        return <React.Fragment>
-            {alertMessage && <AlertDialog isOpen={true} title="提醒" content={alertMessage} onClose={this.onAlertDialogClose}/>}
+        const { task, platforms, taskTags } = this.state;
+        return <React.Fragment>      
+            <Dialog alertMessage={this.props.alertMessage}/> 
             {task && < Formik
                 initialValues={task}
                 enableReinitialize={true}
@@ -143,6 +144,6 @@ const mapStateToProps = (state) => {
     return { ...state.location, ...state.task };
 }
 
-const task = withRouter(connect(mapStateToProps)(Task));
+const task = withRouter(connect(mapStateToProps)( Task));
 
 export { task as Task };

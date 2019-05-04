@@ -1,16 +1,25 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { withHeader, DataTable } from '../../controls'
+import { withHeader, DataTable, Dialog } from '../../controls'
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import Button from '@material-ui/core/Button'
 import { taskActions } from '../../actions'
+import { routeUrls } from '../../constants'
+import { Link} from 'react-router-dom'
 
 const Container = withHeader(props => <div {...props}>
     {props.children}
 </div>)
 
+
 class TaskList extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { rows: [], pageIndex: 0, pageSize: 10, totalCount: 0 };
+    }
 
     renderHeader = () => <TableRow>
         <TableCell>支持平台</TableCell>
@@ -28,26 +37,26 @@ class TaskList extends Component {
         <TableCell>{row.point}</TableCell>
         <TableCell>{row.taskState}</TableCell>
         <TableCell>{row.operator}</TableCell>
-        <TableCell>{row.createTime}</TableCell>
+        <TableCell>{row.createTime2}</TableCell>
         <TableCell>
             <div style={{ display: 'flex' }}>
-                <button>abc</button>
-                <button>def</button>
+                <Button size="small" color="primary"  component={Link}  to={`${routeUrls.TASK_ADD_UPDATE}?taskId=${row.taskID}`}>详情</Button>
+                <Button size="small" color="primary" onClick={()=>this.onModifyClick(row)}>修改</Button>
             </div>
         </TableCell>
     </TableRow>
 
-    constructor(props) {
-        super(props);     
-        this.state = { rows: [], pageIndex: 0, pageSize: 10, totalCount: 0 };
+    onModifyClick=e=>{
+        console.log(e);
     }
 
-    handleChangePage = (event, pageIndex) => {
-        this.setState({ pageIndex:pageIndex});
-        this.props.dispatch(taskActions.getTasks(pageIndex+1,this.state.pageSize));
+
+    onPageIndexChange = (event, pageIndex) => {
+        this.setState({ pageIndex: pageIndex });
+        this.props.dispatch(taskActions.getTasks(pageIndex + 1, this.state.pageSize));
     };
 
-    handleChangeRowsPerPage = event => {
+    onPageSizeChange = event => {
         this.setState({ page: 0, rowsPerPage: event.target.value });
     };
 
@@ -58,25 +67,29 @@ class TaskList extends Component {
 
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps != null) {
-            const { currentTask, platforms, taskTags, alertMessage,totalCount,tasks } = nextProps;
-            this.setState({ task: currentTask, platforms, taskTags, alertMessage,totalCount,rows:tasks });
+            const { currentTask, platforms, taskTags, alertMessage, totalCount, tasks } = nextProps;
+            this.setState({ task: currentTask, platforms, taskTags, alertMessage, totalCount, rows: tasks });
         }
     }
 
     render() {
-        const { rows, pageSize, pageIndex ,totalCount} = this.state;
-        return <Container title={'任务列表'} >
-            <DataTable
-                rows={rows}
-                pageSize={pageSize}
-                pageIndex={pageIndex}
-                totalCount={totalCount}
-                onPageIndexChange={this.handleChangePage}
-                onPageSizeChange={this.handleChangeRowsPerPage}
-                renderHeader={this.renderHeader}
-                renderRow={this.renderRow}>
-            </DataTable>
-        </Container>
+        const { rows, pageSize, pageIndex, totalCount } = this.state;
+        return <React.Fragment>
+            <Dialog alertMessage={this.props.alertMessage}/>
+            <Container title={'任务列表'} >
+                <DataTable
+                    rows={rows}
+                    pageSize={pageSize}
+                    pageIndex={pageIndex}
+                    totalCount={totalCount}
+                    onPageIndexChange={this.onPageIndexChange}
+                    onPageSizeChange={this.onPageSizeChange}
+                    renderHeader={this.renderHeader}                
+                    renderRow={this.renderRow}>
+                </DataTable>
+            </Container>
+        </React.Fragment>
+
     }
 }
 

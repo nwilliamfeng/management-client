@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTable, faEdit, faUser, faTasks, faMoneyBill, faUserFriends, faCircle } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
 import { routeUrls } from '../constants'
-
 import { Link} from 'react-router-dom'
 
 
