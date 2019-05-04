@@ -1,47 +1,72 @@
 import React from 'react'
 import styled from 'styled-components'
-import Card from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper'
+import { Form } from 'formik'
+import { Button } from '@material-ui/core'
+import SaveIcon from '@material-ui/icons/Save'
+
+// const Container = styled.div`
+
+//     align-items: center;
+//     margin-left:20px;
+//     display:flex;
+//     flex-direction:column;
+//     flex:0 100%;
+//     width:100%;
+
+//     overflow-x:hidden;
+//     justify-content:center;
+// `
 
 const Container = styled.div`
-    padding:15px 15px;
-    padding-top:10px;
+
+    
     display:flex;
     flex-direction:column;
-    flex:0 100%;
    
-  
-`
-const HeaderDiv = styled.div`
-    display:flex;
-    font-size:24px;
-    margin-bottom:10px;
+    width:100%;
+    
+ 
+    overflow-y:auto;
+   
 `
 
-// const BodyDiv = styled.div`
-// display:flex;
-// overflow-y:auto;
-   
-//     height:100vh;
-//     background:white;
-   
-//     margin-top:15px;
-//     height:100%;
-//      padding:15px;
-//     border-width:1px;
-//     border-color:lightgray;
-//     border-style:solid;
-// `
+const HeaderDiv = styled.div`
+     display:flex;
+    padding-bottom:10px;
+    font-size:24px;
+    justify-content: space-between; 
+`
+
+
 
 
 export const withHeader = Component => props => <Container>
     <HeaderDiv>
         {props.title}
     </HeaderDiv>
-    {/* <BodyDiv>
+    <Paper style={{ padding: 15 }} >
         <Component {...props} />
-    </BodyDiv> */}
-     <Card style={{padding:15,overflowY:'auto',height:'100%',overflowX:'hidden'  }} >
-        <Component {...props} />
-    </Card>
+    </Paper>
 
-</Container> 
+</Container>
+
+
+
+
+export const withForm = Component => props =>
+
+    <Form >
+        <HeaderDiv>
+            {props.title}
+            <Button variant="contained" size="small" type="submit" disabled={props.isSaving}>
+                <SaveIcon />
+                保存
+            </Button>
+        </HeaderDiv>
+
+        <Paper style={{ padding: 15, }}>
+            <Component  {...props} />
+        </Paper>
+    </Form>
+

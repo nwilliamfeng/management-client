@@ -31,12 +31,11 @@ const NavigateDiv = styled.div`
 `
 
 const BodyDiv = styled.div`
-    display:flex;
+    
     background: #F7F7F7;
-    overflow-y:auto;
-    width:100%;
-    height:100vh;
- 
+     overflow-y:auto;   
+    height:100%;  
+    padding:15px;
     
 `
 
@@ -65,16 +64,6 @@ class Shell extends Component {
     //     return false;
     // }
 
-    renderChilds() {
-        let a = [];
-        for (let i = 0; i < 100; i++) {
-            a.push(i);
-        }
-        return <div>
-            {a.map(x => <div>{x}</div>)}
-        </div>
-    }
-
     render() {
         return <Router>
             <ShellDiv>
@@ -90,7 +79,7 @@ class Shell extends Component {
 
                 <ContainerDiv>
                     <MyAppBar />
-                    <BodyDiv>
+                    <BodyDiv  className='scollContainer'>
                         <Switch>
                             <Route path={routeUrls.TASK_ADD_UPDATE} component={Task} />
                             <Route path={routeUrls.TASK_LIST} component={TaskList} />
