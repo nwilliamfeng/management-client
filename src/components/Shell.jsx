@@ -6,7 +6,7 @@ import { TitleBar } from './TitleBar'
 import { UserPanel } from './UserPanel'
 import NavigateBar from './NavigateBar'
 import { routeUrls } from '../constants'
-import { Task, TaskList } from './tasks'
+import { Task, TaskList,TaskTag,TaskTagList } from './tasks'
 import { BrowserRouter as Router,Switch,Route,} from 'react-router-dom'
 
 const ShellDiv = styled.div`
@@ -83,6 +83,8 @@ class Shell extends Component {
                         <Switch>
                             <Route path={routeUrls.TASK_ADD_UPDATE} component={Task} />
                             <Route path={routeUrls.TASK_LIST} component={TaskList} />
+                            <Route path={routeUrls.TASK_TAG_ADD_UPDATE} component={TaskTag} />
+                            <Route path={routeUrls.TASK_TAG_LIST} component={TaskTagList} />
                         </Switch>
                     </BodyDiv>
                 </ContainerDiv>

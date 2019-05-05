@@ -8,6 +8,9 @@ export const taskActions = {
     createTask,
     addOrUpateTask,
     getTaskInLocal,
+    getTaskTags,
+    addOrUpateTaskTag,
+    
 }
 
 function getTasks(platformId, startTime, endTime, pageIndex = 1, pageSize = 10) {
@@ -15,6 +18,18 @@ function getTasks(platformId, startTime, endTime, pageIndex = 1, pageSize = 10) 
         try {
             const result = await taskApi.loadTasks(platformId, startTime, endTime, pageIndex, pageSize);
             dispatch({ type: taskConstants.LOAD_TASK_LIST, tasks: result.data, totalCount: result.totalCount });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
+        }
+    }
+}
+
+function getTaskTags() {
+    return async dispatch => {
+        try {
+            const result = await taskApi.getTaskTags();
+            dispatch({ type: taskConstants.GET_TASK_TAGS, taskTags: result.data });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
@@ -57,5 +72,12 @@ function addOrUpateTask(task) {
         const result = await taskApi.addOrUpdateTask(task);
         // console.log(result);
         dispatch({ type: taskConstants.COMMIT_TASK, task: result.data, message: buildMessage(result.message) });
+    }
+}
+
+function addOrUpateTaskTag(taskTag) {
+    return async dispatch => {
+        const result = await taskApi.addOrUpdateTaskTag(taskTag);
+        dispatch({ type: taskConstants.COMMIT_TASK_TAG, taskTag: result.data, message: buildMessage(result.message) });
     }
 }

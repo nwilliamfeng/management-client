@@ -1,5 +1,5 @@
 import { ApiHelper } from './apiHelper'
-import moment from 'moment'
+ 
 
 class TaskApi {
 
@@ -8,6 +8,7 @@ class TaskApi {
         // console.log(result);
         return result;
     }
+
 
     async createTask() {
         const result = await ApiHelper.get('/task/getdefaulttask');
@@ -25,6 +26,11 @@ class TaskApi {
 
     async addOrUpdateTask(task) {
         const result = await ApiHelper.post('/task/AddOrUpdateTask', task);
+        return result;
+    }
+
+    async addOrUpdateTaskTag(taskTag) {
+        const result = await ApiHelper.post('/task/AddOrUpdateTaskTag', taskTag);
         return result;
     }
 

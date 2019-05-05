@@ -122,6 +122,8 @@ class NavigateBar extends React.Component {
         { category: categories.USER_MANAGE, url: routeUrls.USER_CARD_LIST, title: '用户卡券列表' },
         { category: categories.TASK_MANAGE, url: routeUrls.TASK_LIST, title: '任务列表' },
         { category: categories.TASK_MANAGE, url: routeUrls.TASK_ADD_UPDATE, title: '添加任务' },
+        { category: categories.TASK_MANAGE, url: routeUrls.TASK_TAG_LIST, title: '任务标签列表' },
+        { category: categories.TASK_MANAGE, url: routeUrls.TASK_TAG_ADD_UPDATE, title: '添加任务标签' },
         { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_USERGIFT_FREEZING, title: '卡券冻结列表' },
         { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_APP_LST, title: '卡券支付列表' },
         { category: categories.SYS_USER_MANAGE, url: routeUrls.LOGIN_INFO_DETAIL, title: '权限管理'},

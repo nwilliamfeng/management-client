@@ -63,9 +63,20 @@ export const routeUrls={
     TASK_LIST:'/Task/STaskList',
 
      /**
-     * 添加任务
+     * 添加或修改任务
      */
     TASK_ADD_UPDATE:'/Task/STaskAddOrUpdate',
+
+    /**
+     * 任务标签列表
+     */
+    TASK_TAG_LIST:'/Task/STagList',
+
+     /**
+     * 添加或修改任务标签
+     */
+    TASK_TAG_ADD_UPDATE:'/Task/STagAddOrUpdate',
+
 
     /**
      * 卡券冻结列表
