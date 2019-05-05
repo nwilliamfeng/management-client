@@ -1,39 +1,33 @@
 import { ApiHelper } from './apiHelper'
-import  moment from 'moment'
+import moment from 'moment'
 
 class TaskApi {
 
-    async loadTasks(pageIndex=1,pageSize=10) {
-        const result = await ApiHelper.get(`/task/loadTasks?pageIndex=${pageIndex}&pageSize=${pageSize}`);
-       // console.log(result);
+    async loadTasks(platformId, startTime,  endTime ,pageIndex = 1, pageSize = 10) {
+        const result = await ApiHelper.get(`/task/loadTasks?platformId=${platformId}&startTime=${startTime}&endTime=${endTime}&pageIndex=${pageIndex}&pageSize=${pageSize}`);
+        // console.log(result);
         return result;
     }
 
-    async createTask(){
+    async createTask() {
         const result = await ApiHelper.get('/task/getdefaulttask');
-        result.name='abc';
-        result.beginDate=moment().format('YYYY-MM-DD');
-        result.endDate=moment().format('YYYY-MM-DD');
-        console.log(result);
-        // result.beginTime=moment().format('YYYY-MM-DD');
-        // result.endTime=moment().format('YYYY-MM-DD');
-        // result.createTime=moment().format('YYYY-MM-DD');
+        result.name = '新任务';
         return result;
     }
 
-    async getPlatforms(){
+    async getPlatforms() {
         return await ApiHelper.get('/task/GetPlatforms');
     }
 
-    async getTaskTags(){
-        return  await ApiHelper.get('/task/getTaskTags');
+    async getTaskTags() {
+        return await ApiHelper.get('/task/getTaskTags');
     }
 
-    async addTask(task){
-       const result = await ApiHelper.postByForm('/task/addtask',task);
-       console.log(result);
+    async addOrUpdateTask(task) {
+        const result = await ApiHelper.post('/task/AddOrUpdateTask', task);
+        return result;
     }
 
 }
 
-export const taskApi=new TaskApi(); 
+export const taskApi = new TaskApi(); 

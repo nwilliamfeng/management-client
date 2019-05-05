@@ -65,7 +65,7 @@ export const FormDatePickerField = ({ name, onChange, label, value, style }) => 
 
 export const FormTextField = ({ name,value, label, errors, onChange, style }) => <TextField
     name={name}
-    value={value?value:''}
+    value={value!=null?value:''}
     label={label}
     error={Boolean(errors[name])}
     helperText={errors[name]}

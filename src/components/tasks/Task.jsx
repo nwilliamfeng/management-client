@@ -7,17 +7,17 @@ import { isBoolean, isDate } from 'util';
 import { Formik } from 'formik';
 import { Grid, MenuItem, } from '@material-ui/core';
 import { GridTextAreaField, GridDatePickerField, GridRadioGroupField, GridTextField, GridSelectField, GridRow, FormContainer } from '../helper'
-import {Dialog } from '../../controls'
+import {ShowDialog } from '../../controls'
 
 /**
  * 验证模板
  */
 const validationSchema = Yup.object().shape({
     platformID: Yup.string().required('平台类型不能为空。'),
-    tagId: Yup.number().notOneOf([0], '请选择任务标签。'),
-    name: Yup.string().required('任务名称不能为空。'),
-    taskSort: Yup.number().notOneOf([0], '请输入任务序号。'),
-    taskExpireDays: Yup.number().notOneOf([0], '请输入领取任务有效天数。'),
+    // tagId: Yup.number().notOneOf([0], '请选择任务标签。'),
+    // name: Yup.string().required('任务名称不能为空。'),
+    // taskSort: Yup.number().notOneOf([0], '请输入任务序号。'),
+    // taskExpireDays: Yup.number().notOneOf([0], '请输入领取任务有效天数。'),
 })
 
 const optionalData = {
@@ -43,7 +43,7 @@ class Task extends Component {
         }
         else {
             const taskId =this.props.location.search.replace('?taskId=','');
-            console.log(taskId);??
+            dispatch(taskActions.getTaskInLocal(taskId));
         }
     }
 
@@ -76,23 +76,20 @@ class Task extends Component {
         this.setState({ task });
     }
 
-     
     render() {
-        console.log('render');
         const { dispatch } = this.props;
         const { task, platforms, taskTags } = this.state;
         return <React.Fragment>      
-            <Dialog alertMessage={this.props.alertMessage}/> 
+            <ShowDialog alertMessage={this.props.alertMessage}/> 
             {task && < Formik
                 initialValues={task}
                 enableReinitialize={true}
                 validationSchema={validationSchema}
                 onSubmit={values => {
-                    console.log(values);
-                    dispatch(taskActions.addTask(values));
+                    dispatch(taskActions.addOrUpateTask(values));
                 }}
                 render={({ errors, }) => (
-                    <FormContainer title={this.needCreate() ? '添加任务' : this.props.location.search}>
+                    <FormContainer title={this.needCreate() ? '添加任务' : `修改任务：${task.name}`}>
                         <Grid container spacing={24} direction="column"   >
                             <GridRow>
                                 <GridSelectField style={{ width: 120 }} name="platformID" value={task.platformID} errors={errors} label={'平台类型'} onChange={this.onChangePlatform}>
@@ -121,18 +118,17 @@ class Task extends Component {
                                 <GridTextField name="dayTimes" value={task.dayTimes} label="单用户单日可兑换" errors={errors} onChange={this.onPropertyChange} />
                                 <GridTextField name="totalTimes" value={task.totalTimes} label="单用户累计可兑换" errors={errors} onChange={this.onPropertyChange} />
                                 <GridTextField name="totalLimit" value={task.totalLimit} label="总发放张数" errors={errors} onChange={this.onPropertyChange} />
-                                <GridDatePickerField name="beginDate" onChange={this.onPropertyChange} label="任务开始时间" value={task.beginDate} />
-                                <GridDatePickerField name="endDate" value={task.endDate} label="任务结束时间" errors={errors} onChange={this.onPropertyChange} />
+                                <GridDatePickerField name="beginTime" onChange={this.onPropertyChange} label="任务开始时间" value={task.beginTime} />
+                                <GridDatePickerField name="endTime" value={task.endTime} label="任务结束时间" errors={errors} onChange={this.onPropertyChange} />
                             </GridRow>
                             <GridRow>
                                 <GridTextField name="taskMinPoint" value={task.taskMinPoint} style={{ width: 120 }} label="任务的最小积分" errors={errors} onChange={this.onPropertyChange} />
                                 <GridTextField name="taskMaxPoint" value={task.taskMaxPoint} style={{ width: 120 }} label="任务的最大积分" errors={errors} onChange={this.onPropertyChange} />
                             </GridRow>
-                             <div style={{ padding: '30px 30px 30px 10px' }} >
-                                <GridTextAreaField name="description" rows={2} value={task.description} label="任务描述" errors={errors} onChange={this.onPropertyChange} />
+                             <div style={{ padding: '60px 30px 30px 10px' }} >
+                                <GridTextAreaField name="description" rows={3} value={task.description} label="任务描述" errors={errors} onChange={this.onPropertyChange} />
                             </div>  
                         </Grid>
-
                     </FormContainer>
                 )}
             />}

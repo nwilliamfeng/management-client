@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { withHeader, DataTable, Dialog } from '../../controls'
+import { withHeader, DataTable, ShowDialog } from '../../controls'
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button'
 import { taskActions } from '../../actions'
 import { routeUrls } from '../../constants'
-import { Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import moment from 'moment'
 
 const Container = withHeader(props => <div {...props}>
     {props.children}
@@ -18,7 +19,15 @@ class TaskList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { rows: [], pageIndex: 0, pageSize: 10, totalCount: 0 };
+        this.state = {
+            platformID: '0',
+            startTime: '0001-01-01',
+            endTime: result.beginDate = moment().format('YYYY-MM-DD'),
+            rows: [],
+            pageIndex: 0,
+            pageSize: 10,
+            totalCount: 0
+        };
     }
 
     renderHeader = () => <TableRow>
@@ -40,15 +49,11 @@ class TaskList extends Component {
         <TableCell>{row.createTime2}</TableCell>
         <TableCell>
             <div style={{ display: 'flex' }}>
-                <Button size="small" color="primary"  component={Link}  to={`${routeUrls.TASK_ADD_UPDATE}?taskId=${row.taskID}`}>详情</Button>
-                <Button size="small" color="primary" onClick={()=>this.onModifyClick(row)}>修改</Button>
+                <Button size="small" color="primary" component={Link} to={`${routeUrls.TASK_ADD_UPDATE}?taskId=${row.taskID}`}>详情</Button>
+                <Button size="small" color="primary" onClick={() => this.onModifyClick(row)}>修改</Button>
             </div>
         </TableCell>
     </TableRow>
-
-    onModifyClick=e=>{
-        console.log(e);
-    }
 
 
     onPageIndexChange = (event, pageIndex) => {
@@ -75,7 +80,7 @@ class TaskList extends Component {
     render() {
         const { rows, pageSize, pageIndex, totalCount } = this.state;
         return <React.Fragment>
-            <Dialog alertMessage={this.props.alertMessage}/>
+            <ShowDialog alertMessage={this.props.alertMessage} />
             <Container title={'任务列表'} >
                 <DataTable
                     rows={rows}
@@ -84,7 +89,7 @@ class TaskList extends Component {
                     totalCount={totalCount}
                     onPageIndexChange={this.onPageIndexChange}
                     onPageSizeChange={this.onPageSizeChange}
-                    renderHeader={this.renderHeader}                
+                    renderHeader={this.renderHeader}
                     renderRow={this.renderRow}>
                 </DataTable>
             </Container>

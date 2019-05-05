@@ -24,6 +24,12 @@ export const dialogConstants={
      */
     SHOW_ERROR:'SHOW_ERROR',
 
+
+    /**
+     * 显示信息
+     */
+    SHOW_INFO:'SHOW_INFO',
+
     /**
      * 关闭窗口
      */
