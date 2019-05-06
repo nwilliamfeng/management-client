@@ -24,7 +24,7 @@ class TaskList extends Component {
             startTime: '0001-01-01',
             endTime:  moment().format('YYYY-MM-DD'),
             rows: [],
-            pageIndex: 0,
+            pageIndex: 1,
             pageSize: 10,
             totalCount: 0
         };
@@ -40,11 +40,13 @@ class TaskList extends Component {
         <TableCell>操作</TableCell>
     </TableRow>
 
+    getTaskState=state=>state===0?"待审核":state===1?"已上架":"已下架";
+
     renderRow = row => <TableRow key={row.taskID}>
-        <TableCell>{row.platformID}</TableCell>
+        <TableCell>{this.state.platforms.find(x=>x.platformID===row.platformID).name}</TableCell>
         <TableCell>{row.name}</TableCell>
         <TableCell>{row.point}</TableCell>
-        <TableCell>{row.taskState}</TableCell>
+        <TableCell>{this.getTaskState(row.taskState)}</TableCell>
         <TableCell>{row.operator}</TableCell>
         <TableCell>{row.createTime}</TableCell>
         <TableCell>
@@ -56,36 +58,44 @@ class TaskList extends Component {
     </TableRow>
 
 
-    onPageIndexChange = (event, pageIndex) => {
-        this.setState({ pageIndex: pageIndex });
-        this.props.dispatch(taskActions.getTasks(pageIndex + 1, this.state.pageSize));
+    onPageIndexChange = (event, idx) => {
+        const {platformID,pageSize,startTime,endTime,pageIndex}=this.state;
+        if(pageIndex!==idx+1){
+            this.setState({ pageIndex: idx+1 });      
+            this.props.dispatch(taskActions.getTasks(platformID,startTime,endTime, idx + 1, pageSize));
+        }      
     };
 
     onPageSizeChange = event => {
-        this.setState({ page: 0, rowsPerPage: event.target.value });
+        this.setState({ pageIndex: 1, pageSize: event.target.value });
+        const {platformID,startTime,endTime}=this.state;
+        this.props.dispatch(taskActions.getTasks(platformID,startTime,endTime,  1, event.target.value));
     };
 
     componentDidMount() {
         const { dispatch } = this.props;
-        dispatch(taskActions.getTasks());
+        const {platformID,pageSize,startTime,endTime}=this.state;
+        
+        dispatch(taskActions.getTasks(platformID,startTime,endTime,1,pageSize));
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps != null) {
-            const { currentTask, platforms, taskTags, alertMessage, totalCount, tasks } = nextProps;
-            this.setState({ task: currentTask, platforms, taskTags, alertMessage, totalCount, rows: tasks });
+        if (nextProps != null) {           
+            const { currentTask, platforms,  alertMessage, totalCount, tasks } = nextProps;
+            this.setState({ task: currentTask, platforms,  alertMessage, totalCount, rows: tasks });
         }
     }
 
     render() {
         const { rows, pageSize, pageIndex, totalCount } = this.state;
+       
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
             <Container title={'任务列表'} >
                 <DataTable
                     rows={rows}
                     pageSize={pageSize}
-                    pageIndex={pageIndex}
+                    pageIndex={pageIndex-1}
                     totalCount={totalCount}
                     onPageIndexChange={this.onPageIndexChange}
                     onPageSizeChange={this.onPageSizeChange}
@@ -94,14 +104,11 @@ class TaskList extends Component {
                 </DataTable>
             </Container>
         </React.Fragment>
-
     }
 }
 
 
-const mapStateToProps = (state) => {
-    return { ...state.location, ...state.task };
-}
+const mapStateToProps = (state) => {return { ...state.location, ...state.task };}
 
 const instance = withRouter(connect(mapStateToProps)(TaskList));
 

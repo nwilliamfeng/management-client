@@ -9,15 +9,15 @@ export const taskActions = {
     addOrUpateTask,
     getTaskInLocal,
     getTaskTags,
-    addOrUpateTaskTag,
-    
+    addOrUpateTaskTag,   
 }
 
 function getTasks(platformId, startTime, endTime, pageIndex = 1, pageSize = 10) {
     return async dispatch => {
         try {
+            const platforms= await taskApi.getPlatforms();    
             const result = await taskApi.loadTasks(platformId, startTime, endTime, pageIndex, pageSize);
-            dispatch({ type: taskConstants.LOAD_TASK_LIST, tasks: result.data, totalCount: result.totalCount });
+            dispatch({ type: taskConstants.LOAD_TASK_LIST, tasks: result.data, totalCount: result.count ,platforms});
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
@@ -28,8 +28,9 @@ function getTasks(platformId, startTime, endTime, pageIndex = 1, pageSize = 10) 
 function getTaskTags() {
     return async dispatch => {
         try {
-            const result = await taskApi.getTaskTags();
-            dispatch({ type: taskConstants.GET_TASK_TAGS, taskTags: result.data });
+            const platforms= await taskApi.getPlatforms();    
+            const taskTags = await taskApi.getTaskTags();
+            dispatch({ type: taskConstants.GET_TASK_TAGS, taskTags,platforms });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
@@ -62,7 +63,6 @@ function getTaskInLocal(taskId) {
             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
         }
     }
-
 }
 
 

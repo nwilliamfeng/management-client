@@ -8,3 +8,5 @@ export * from './ChipList'
 export * from './formFields'
 export * from './Pagination'
 export * from './Dialog'
+
+export * from './CustomDialog'

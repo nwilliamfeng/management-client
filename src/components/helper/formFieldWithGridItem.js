@@ -1,5 +1,5 @@
-import { FormTextAreaField,  FormSelectField, FormTextField, FormRadioGroupField, FormDatePickerField, withGridItem } from '../../controls'
-import {Grid} from '@material-ui/core'
+import { FormTextAreaField,  FormSelectField ,FormSwitch, FormTextField, FormRadioGroupField, FormDatePickerField, withGridItem, } from '../../controls'
+import {Grid,Switch} from '@material-ui/core'
 import React from 'react'
 import {withForm} from '../../controls'
 
@@ -13,8 +13,12 @@ export const GridRadioGroupField=withGridItem(FormRadioGroupField);
 
 export const GridTextAreaField=withGridItem(FormTextAreaField);
 
+export const GridSwitch =withGridItem(FormSwitch);
+
+
+
 export const GridRow = props => <Grid item style={props.style} >
-    <Grid container spacing={40} >
+    <Grid container spacing={40}  >
         {props.children}
     </Grid>
 </Grid>

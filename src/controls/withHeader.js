@@ -24,10 +24,10 @@ const Container = styled.div`
     display:flex;
     flex-direction:column;
    
-    width:100%;
+    /* width:100%;
     
  
-    overflow-y:auto;
+    overflow-y:auto; */
    
 `
 

@@ -5,12 +5,14 @@ import {
     InputLabel,
     FormControl,
     MenuItem,
+    FormControlLabel,
     TextField,
     Radio,
     Select,
     FormHelperText,
     withStyles,
     Grid,
+    Switch,
 } from '@material-ui/core';
 
 
@@ -41,9 +43,9 @@ export const FormSelectField = props => {
 
 // </div>
 
-export const FormRadioGroupField = ({ value, items, onChange, label, name ,style}) => <div style={{...style,  display: 'flex', flexDirection: 'column' }}>
-    <InputLabel style={{ display: 'flex',  fontSize: 12 }}>{label}</InputLabel>
-    <div style={{ display: 'flex',marginTop:10,  }}>
+export const FormRadioGroupField = ({ value, items, onChange, label, name, style }) => <div style={{ ...style, display: 'flex', flexDirection: 'column' }}>
+    <InputLabel style={{ display: 'flex', fontSize: 12 }}>{label}</InputLabel>
+    <div style={{ display: 'flex', marginTop: 10, }}>
         {items && items.map(x => <RadioDiv key={x.value}>
             <Radio style={{ padding: 0 }} name={name} checked={value === x.value} onChange={onChange} value={x.value} />
             {x.name}
@@ -63,9 +65,9 @@ export const FormDatePickerField = ({ name, onChange, label, value, style }) => 
     InputLabelProps={{ shrink: true, }}
 />
 
-export const FormTextField = ({ name,value, label, errors, onChange, style }) => <TextField
+export const FormTextField = ({ name, value, label, errors, onChange, style }) => <TextField
     name={name}
-    value={value!=null?value:''}
+    value={value != null ? value : ''}
     label={label}
     error={Boolean(errors[name])}
     helperText={errors[name]}
@@ -73,14 +75,31 @@ export const FormTextField = ({ name,value, label, errors, onChange, style }) =>
     style={style}
 />
 
-export const FormTextAreaField = ({ name,value, label, errors, onChange, style,rows }) => <TextField
+export const FormSwitch = ({ name, value, label, onChange,  }) => <FormControlLabel control={
+    <Switch
+        name={name}
+        checked={value === true}
+        value={value != null ? value===false : true}
+        label={label}
+        
+        onChange={onChange}
+        
+        color="primary"
+    />
+}
+    label={label}
+/>
+
+
+
+export const FormTextAreaField = ({ name, value, label, errors, onChange, style, rows }) => <TextField
     name={name}
-    value={value?value:''}
+    value={value ? value : ''}
     fullWidth
     multiline
     rows={rows}
-    variant="outlined"
-    
+ //variant="outlined"
+
     InputLabelProps={{ shrink: true, }}
     label={label}
     error={Boolean(errors[name])}
