@@ -1,10 +1,8 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
@@ -42,13 +40,7 @@ const DialogContent = withStyles(theme => ({
     },
 }))(MuiDialogContent);
 
-const DialogActions = withStyles(theme => ({
-    root: {
-        borderTop: `1px solid ${theme.palette.divider}`,
-        margin: 0,
-        padding: theme.spacing.unit,
-    },
-}))(MuiDialogActions);
+
 
 export class CustomDialog extends React.Component {
 
@@ -57,28 +49,14 @@ export class CustomDialog extends React.Component {
         this.state = {
             open: false,
         };
-
     }
 
-    handleConfirm = () => {
-        const { executeConfirm } = this.state;
-        if (executeConfirm != null) {
-            const result = executeConfirm();
-            if (result === false) {
-                return;
-            }
-        }
-        this.setState({
-            open: false,
-        });
-    };
 
     handleClose = () => {
         this.setState({ open: false });
     };
 
     componentWillReceiveProps(nextProps, nextContext) {
-        console.log(nextProps);
         if (nextProps != null) {
             const { isOpen, title, executeConfirm } = nextProps;
             this.setState({ open: isOpen, title, executeConfirm });
@@ -98,11 +76,11 @@ export class CustomDialog extends React.Component {
             <DialogContent>
                 {this.props.children}
             </DialogContent>
-            <DialogActions>
+            {/* <DialogActions>
                 <Button onClick={this.handleConfirm} color="primary">
                     确定
             </Button>
-            </DialogActions>
+            </DialogActions> */}
         </Dialog>
         );
     }

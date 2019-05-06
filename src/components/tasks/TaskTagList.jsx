@@ -29,7 +29,6 @@ class TaskTagList extends Component {
         super(props);
         this.state = {
             rows: [],
-            newTag:null,
             pageIndex: 1,
             pageSize: 50,
             isOpenDialog:false,
@@ -95,16 +94,21 @@ class TaskTagList extends Component {
         </div>
     </TitleDiv>
 
-    onExecuteConfirm=()=>{
+    createNewTag=()=>{return {tagSequence:0,tagName:'',isEnabled:false,platformID:0,remark:null}};
 
+    
+
+    onCommit=tag=>{
+        console.log(tag);
+        this.setState({isOpenDialog:false});
     }
 
     render() {
         const { rows, pageSize, pageIndex ,isOpenDialog} = this.state;
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
-            <CustomDialog isOpen={isOpenDialog===true} title={'新建任务标签'} executeConfirm={this.onExecuteConfirm}>
-                <TaskTag tag={{}}/>
+            <CustomDialog isOpen={isOpenDialog===true} title={'新建任务标签'} >
+                <TaskTag tag={this.createNewTag()} onCommit={this.onCommit} />
             </CustomDialog>
             <Container title={this.renderTitle()} >
                 <DataTable

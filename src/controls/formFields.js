@@ -75,20 +75,23 @@ export const FormTextField = ({ name, value, label, errors, onChange, style }) =
     style={style}
 />
 
-export const FormSwitch = ({ name, value, label, onChange,  }) => <FormControlLabel control={
-    <Switch
-        name={name}
-        checked={value === true}
-        value={value != null ? value===false : true}
-        label={label}
-        
-        onChange={onChange}
-        
-        color="primary"
+export const FormSwitch = ({ name, value, label, onChange, }) => <div style={{display:'flex',flexDirection:'column',textAlign:'left'}}>
+    <div style={{fontSize:12,color:'gray', }}>{label}</div>
+    <FormControlLabel control={
+        <Switch
+            name={name}
+            checked={value === true}
+            value={value != null ? value === false : true}
+           
+
+            onChange={onChange}
+
+            color="primary"
+        />
+    }
+    label={value != null && value === true?'是' : '否'}
     />
-}
-    label={label}
-/>
+</div>
 
 
 
@@ -98,7 +101,7 @@ export const FormTextAreaField = ({ name, value, label, errors, onChange, style,
     fullWidth
     multiline
     rows={rows}
- //variant="outlined"
+    //variant="outlined"
 
     InputLabelProps={{ shrink: true, }}
     label={label}
