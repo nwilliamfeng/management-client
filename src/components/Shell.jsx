@@ -6,8 +6,9 @@ import { TitleBar } from './TitleBar'
 import { UserPanel } from './UserPanel'
 import NavigateBar from './NavigateBar'
 import { routeUrls } from '../constants'
-import { Task, TaskList,TaskTag,TaskTagList } from './tasks'
+import {  TaskList,TaskTagList } from './tasks'
 import { BrowserRouter as Router,Switch,Route,} from 'react-router-dom'
+import { GiftList } from './gifts';
 
 const ShellDiv = styled.div`
     display:flex;   
@@ -81,9 +82,8 @@ class Shell extends Component {
                     <MyAppBar />
                     <BodyDiv  className='scollContainer'>
                         <Switch>
-                            <Route path={routeUrls.TASK_ADD_UPDATE} component={Task} />
-                            <Route path={routeUrls.TASK_LIST} component={TaskList} />
-                            <Route path={routeUrls.TASK_TAG_ADD_UPDATE} component={TaskTag} />
+                            <Route path={routeUrls.GIFT_LIST} component={GiftList} />
+                            <Route path={routeUrls.TASK_LIST} component={TaskList} />                        
                             <Route path={routeUrls.TASK_TAG_LIST} component={TaskTagList} />
                         </Switch>
                     </BodyDiv>

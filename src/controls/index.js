@@ -10,3 +10,5 @@ export * from './Pagination'
 export * from './Dialog'
 
 export * from './CustomDialog'
+
+export * from './SearchPanel'

@@ -5,7 +5,7 @@ import { isBoolean, isDate } from 'util';
 import { Formik, Form } from 'formik';
 import { MenuItem, Button, } from '@material-ui/core';
 import { GridTextAreaField, GridSwitch, GridTextField, GridSelectField } from '../helper'
-
+import Divider from '@material-ui/core/Divider';
 
 /**
  * 验证模板
@@ -67,6 +67,7 @@ class TaskTag extends Component {
                     <GridSwitch name="isEnabled" label="是否有效" value={tag ? tag.isEnabled : false} onChange={this.onPropertyChange} />
 
                     <hr style={{border:'none',borderBottom: 'solid 1px lightgray',marginLeft:-15,marginRight:-15, }} />
+
 
                     <Button variant="contained" color="primary" style={{marginTop:5}}  type="commit">保存</Button>
                 </Form>
