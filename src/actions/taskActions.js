@@ -78,6 +78,8 @@ function addOrUpateTask(task) {
 function addOrUpateTaskTag(taskTag) {
     return async dispatch => {
         const result = await taskApi.addOrUpdateTaskTag(taskTag);
-        dispatch({ type: taskConstants.COMMIT_TASK_TAG, taskTag: result.data, message: buildMessage(result.message) });
+        const platforms= await taskApi.getPlatforms();    
+        const taskTags = await taskApi.getTaskTags();
+        dispatch({ type: taskConstants.COMMIT_TASK_TAG, taskTag: result.data, message: buildMessage(result.message) ,platforms,taskTags});
     }
 }

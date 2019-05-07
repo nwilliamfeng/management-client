@@ -15,11 +15,14 @@ export const taskReducer = (state = initValue, action) => {
         case taskConstants.LOAD_TASK_LIST:
             return { ...state, tasks: action.tasks, totalCount: action.totalCount, alertMessage: null, platforms: action.platforms };
 
+        case taskConstants.COMMIT_TASK_TAG:
+            return { ...state,  alertMessage: action.message, platforms: action.platforms ,taskTags:action.taskTags};
+
         case dialogConstants.SHOW_ERROR_ATTACH:
             return { ...state, alertMessage: action.errorMessage };
 
         case taskConstants.GET_TASK_TAGS:
-            return { ...state, platforms:action.platforms,taskTags:action.taskTags};
+            return { ...state, platforms: action.platforms, taskTags: action.taskTags };
 
         case taskConstants.LOAD_TASK_IN_LOCAL:
             const { tasks } = state;

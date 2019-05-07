@@ -8,8 +8,8 @@ import { Pagination } from './Pagination'
 import { TableHead } from '@material-ui/core';
 
 
-export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader, renderRow,onPageIndexChange,onPageSizeChange }) => {
-    const emptyRows = pageSize - Math.min(pageSize, rows.length - pageIndex * pageSize);
+export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader, renderRow,onPageIndexChange,onPageSizeChange ,needPagination}) => {
+    //const emptyRows = pageSize - Math.min(pageSize, rows.length - pageIndex * pageSize);
 
     return <Table >
         <TableHead>
@@ -23,7 +23,7 @@ export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader,
                 </TableRow>
             )} */}
         </TableBody>
-        <TableFooter>
+        {needPagination===true && <TableFooter>
             <TableRow>
                 <TablePagination
                     labelRowsPerPage={'每页行数'}
@@ -40,7 +40,7 @@ export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader,
                     ActionsComponent={Pagination}
                 />
             </TableRow>
-        </TableFooter>
+        </TableFooter>}
     </Table>
 }
 

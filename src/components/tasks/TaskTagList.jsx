@@ -7,10 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button'
 import { taskActions } from '../../actions'
-import { routeUrls } from '../../constants'
-import { Link } from 'react-router-dom'
 import {TaskTag} from './TaskTag'
-  
 
 const Container = withHeader(props => <div {...props} title="">
     {props.children}
@@ -22,15 +19,13 @@ const TitleDiv=styled.div`
     justify-content:space-between;
 `
 
-
 class TaskTagList extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             rows: [],
-            pageIndex: 1,
-            pageSize: 50,
+            currentTag:null,     
             isOpenDialog:false,
         };
     }
@@ -47,7 +42,7 @@ class TaskTagList extends Component {
     </TableRow>
 
     renderRow = row => <TableRow key={row.id}>
-        <TableCell>{row.platformID}</TableCell>
+        <TableCell>{this.state.platforms.find(x=>x.platformID=== row.platformID).name}</TableCell>
         <TableCell>{row.tagName}</TableCell>
         <TableCell>{row.tagSequence}</TableCell>
         <TableCell>{row.remark}</TableCell>
@@ -56,20 +51,10 @@ class TaskTagList extends Component {
         <TableCell>{row.createTime}</TableCell>
         <TableCell>
             <div style={{ display: 'flex' }}>
-                <Button size="small" color="primary" component={Link} to={`${routeUrls.TASK_TAG_ADD_UPDATE}?tagId=${row.id}`}>详情</Button>
+                <Button size="small" color="primary" onClick={()=>this.setState({isOpenDialog:true, currentTag:row})}>详情</Button>
             </div>
         </TableCell>
     </TableRow>
-
-
-    onPageIndexChange = (event, pageIndex) => {
-        // this.setState({ pageIndex: pageIndex });
-        // this.props.dispatch(taskActions.get(pageIndex + 1, this.state.pageSize));
-    };
-
-    onPageSizeChange = event => {
-        // this.setState({ page: 0, rowsPerPage: event.target.value });
-    };
 
     componentDidMount() {
         const { dispatch } = this.props;
@@ -83,50 +68,43 @@ class TaskTagList extends Component {
         }
     }
 
-    openDialog=()=>{
-        this.setState({isOpenDialog:true})
+    openNewDialog=()=>{
+            this.setState({isOpenDialog:true,currentTag:this.createNewTag()});      
     }
 
     renderTitle=()=><TitleDiv>
         <div>{'任务标签列表'}</div>
         <div style={{display:'flex'}}>
-            <Button color="primary" onClick={this.openDialog}>添加</Button>
+            <Button color="primary" onClick={this.openNewDialog}>添加</Button>
         </div>
     </TitleDiv>
 
     createNewTag=()=>{return {tagSequence:0,tagName:'',isEnabled:false,platformID:0,remark:null}};
 
-    
-
     onCommit=tag=>{
         console.log(tag);
-        this.setState({isOpenDialog:false});
+        this.setState({isOpenDialog:false,currentTag:null});
+        this.props.dispatch(taskActions.addOrUpateTaskTag(tag));      
     }
 
     render() {
-        const { rows, pageSize, pageIndex ,isOpenDialog} = this.state;
+        console.log('do render...');
+        const { rows, currentTag ,isOpenDialog} = this.state;
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
-            <CustomDialog isOpen={isOpenDialog===true} title={'新建任务标签'} >
-                <TaskTag tag={this.createNewTag()} onCommit={this.onCommit} />
+            <CustomDialog isOpen={isOpenDialog===true} title={currentTag==null?'':currentTag.id>0?'修改任务标签' :'新建任务标签'} >
+                <TaskTag  tag={currentTag} onCommit={this.onCommit} />
             </CustomDialog>
             <Container title={this.renderTitle()} >
                 <DataTable
-                    rows={rows}
-                    pageSize={pageSize}
-                    pageIndex={pageIndex-1}
-                    totalCount={rows.length}
-                    onPageIndexChange={this.onPageIndexChange}
-                    onPageSizeChange={this.onPageSizeChange}
+                    rows={rows}                  
                     renderHeader={this.renderHeader}
                     renderRow={this.renderRow}>
                 </DataTable>
             </Container>
         </React.Fragment>
-
     }
 }
-
 
 const mapStateToProps = (state) => {
     return { ...state.location, ...state.task };

@@ -18,7 +18,7 @@ const AlertDialog = ({ isOpen, onClose, title, content }) => <Dialog
         <DialogContentText id="alert-dialog-description" style={{ minWidth: 300 }}>{content}</DialogContentText>
     </DialogContent>
     <DialogActions>
-        <Button onClick={onClose} color="primary">确定</Button>
+        <Button onClick={onClose}  color="primary" >确定</Button>
     </DialogActions>
 </Dialog>
 

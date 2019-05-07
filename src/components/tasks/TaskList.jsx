@@ -100,7 +100,8 @@ class TaskList extends Component {
                     onPageIndexChange={this.onPageIndexChange}
                     onPageSizeChange={this.onPageSizeChange}
                     renderHeader={this.renderHeader}
-                    renderRow={this.renderRow}>
+                    renderRow={this.renderRow}
+                    needPagination={true}>
                 </DataTable>
             </Container>
         </React.Fragment>
