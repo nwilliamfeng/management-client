@@ -1,0 +1,26 @@
+ public class GiftController : Controller
+    {
+        public ActionResult Index()
+        {
+            return Content("gift Ok");
+        }
+
+      
+        [HttpPost]
+        public ActionResult AddOrUpdateGift(GiftModel gift)
+        {  
+            if (string.IsNullOrEmpty(gift.GiftId))
+               return GiftCore.Add(gift).SetCommitResultMessage().ToJsonActionResult();
+            else
+                return GiftCore.Update(gift).SetCommitResultMessage(false).ToJsonActionResult();
+        }
+
+
+        public ActionResult LoadGifts(string giftId, string startTime, string endTime,string activeName, int giftType,int giftState,bool isEnabled,bool isDel, int pageIndex = 1, int pageSize = 20)
+        {
+            var result = GiftCore.GetGiftList(giftId, startTime, endTime, activeName, giftType, giftState, isEnabled, isDel, pageIndex, pageSize);
+            return result.ToJsonActionResult();
+        }
+
+      
+    }

@@ -5,19 +5,20 @@ import { buildMessage } from './messageHelper'
 
 export const taskActions = {
     getTasks,
-    createTask,
+
     addOrUpateTask,
-    getTaskInLocal,
+    // getTaskInLocal,
     getTaskTags,
-    addOrUpateTaskTag,   
+    addOrUpateTaskTag,
 }
 
 function getTasks(platformId, startTime, endTime, pageIndex = 1, pageSize = 10) {
     return async dispatch => {
         try {
-            const platforms= await taskApi.getPlatforms();    
+            const platforms = await taskApi.getPlatforms();
+            const taskTags = await taskApi.getTaskTags();
             const result = await taskApi.loadTasks(platformId, startTime, endTime, pageIndex, pageSize);
-            dispatch({ type: taskConstants.LOAD_TASK_LIST, tasks: result.data, totalCount: result.count ,platforms});
+            dispatch({ type: taskConstants.LOAD_TASK_LIST, tasks: result.data, totalCount: result.count, platforms, taskTags });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
@@ -28,23 +29,9 @@ function getTasks(platformId, startTime, endTime, pageIndex = 1, pageSize = 10) 
 function getTaskTags() {
     return async dispatch => {
         try {
-            const platforms= await taskApi.getPlatforms();    
-            const taskTags = await taskApi.getTaskTags();
-            dispatch({ type: taskConstants.GET_TASK_TAGS, taskTags,platforms });
-        }
-        catch (error) {
-            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
-        }
-    }
-}
-
-function createTask() {
-    return async dispatch => {
-        try {
-            const currentTask = await taskApi.createTask();
             const platforms = await taskApi.getPlatforms();
             const taskTags = await taskApi.getTaskTags();
-            dispatch({ type: taskConstants.CREATE_TASK, currentTask, platforms, taskTags });
+            dispatch({ type: taskConstants.GET_TASK_TAGS, taskTags, platforms });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
@@ -52,34 +39,50 @@ function createTask() {
     }
 }
 
-function getTaskInLocal(taskId) {
+
+
+// function getTaskInLocal(taskId) {
+//     return async dispatch => {
+//         try {
+//             const platforms = await taskApi.getPlatforms();
+//             const taskTags = await taskApi.getTaskTags();
+//             dispatch({ type: taskConstants.LOAD_TASK_IN_LOCAL, taskId, platforms, taskTags });
+//         }
+//         catch (error) {
+//             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
+//         }
+//     }
+// }
+
+
+function addOrUpateTask(task, { platformId, startTime, endTime, pageIndex, pageSize }) {
+
     return async dispatch => {
         try {
+            const result = await taskApi.addOrUpdateTask(task);
             const platforms = await taskApi.getPlatforms();
             const taskTags = await taskApi.getTaskTags();
-            dispatch({ type: taskConstants.LOAD_TASK_IN_LOCAL, taskId, platforms, taskTags });
+            const tasksResult = await taskApi.loadTasks(platformId, startTime, endTime, pageIndex, pageSize);
+
+            // console.log(result);
+            dispatch({ type: taskConstants.COMMIT_TASK, message: buildMessage(result.message), tasks: tasksResult.data, totalCount: tasksResult.count, platforms, taskTags });
         }
         catch (error) {
             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
         }
-    }
-}
-
-
-function addOrUpateTask(task) {
-
-    return async dispatch => {
-        const result = await taskApi.addOrUpdateTask(task);
-        // console.log(result);
-        dispatch({ type: taskConstants.COMMIT_TASK, task: result.data, message: buildMessage(result.message) });
     }
 }
 
 function addOrUpateTaskTag(taskTag) {
     return async dispatch => {
-        const result = await taskApi.addOrUpdateTaskTag(taskTag);
-        const platforms= await taskApi.getPlatforms();    
-        const taskTags = await taskApi.getTaskTags();
-        dispatch({ type: taskConstants.COMMIT_TASK_TAG, taskTag: result.data, message: buildMessage(result.message) ,platforms,taskTags});
+        try {
+            const result = await taskApi.addOrUpdateTaskTag(taskTag);
+            const platforms = await taskApi.getPlatforms();
+            const taskTags = await taskApi.getTaskTags();
+            dispatch({ type: taskConstants.COMMIT_TASK_TAG, taskTag: result.data, message: buildMessage(result.message), platforms, taskTags });
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
+        }
     }
 }

@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { withHeader, DataTable, ShowDialog } from '../../controls'
+import {  DataTable, ShowDialog, CustomDialog } from '../../controls'
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button'
 import { taskActions } from '../../actions'
-import { routeUrls } from '../../constants'
-import { Link } from 'react-router-dom'
 import moment from 'moment'
-
-const Container = withHeader(props => <div {...props}>
-    {props.children}
-</div>)
+import { Task } from './Task'
+import { defaultValues } from '../helper'
+import {Container,TitleDiv} from '../part'
 
 
 class TaskList extends Component {
@@ -20,13 +17,16 @@ class TaskList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isOpenDialog: false,
             platformID: '0',
             startTime: '0001-01-01',
-            endTime:  moment().format('YYYY-MM-DD'),
+            endTime: moment().format('YYYY-MM-DD'),
             rows: [],
             pageIndex: 1,
             pageSize: 10,
-            totalCount: 0
+            totalCount: 0,
+            taskTags: [],
+            currentTask: null,
         };
     }
 
@@ -40,10 +40,10 @@ class TaskList extends Component {
         <TableCell>操作</TableCell>
     </TableRow>
 
-    getTaskState=state=>state===0?"待审核":state===1?"已上架":"已下架";
+    getTaskState = state => state === 0 ? "待审核" : state === 1 ? "已上架" : "已下架";
 
     renderRow = row => <TableRow key={row.taskID}>
-        <TableCell>{this.state.platforms.find(x=>x.platformID===row.platformID).name}</TableCell>
+        <TableCell>{this.state.platforms.find(x => x.platformID === row.platformID).name}</TableCell>
         <TableCell>{row.name}</TableCell>
         <TableCell>{row.point}</TableCell>
         <TableCell>{this.getTaskState(row.taskState)}</TableCell>
@@ -51,51 +51,68 @@ class TaskList extends Component {
         <TableCell>{row.createTime}</TableCell>
         <TableCell>
             <div style={{ display: 'flex' }}>
-                <Button size="small" color="primary" component={Link} to={`${routeUrls.TASK_ADD_UPDATE}?taskId=${row.taskID}`}>详情</Button>
-                {/* <Button size="small" color="primary" onClick={() => this.onModifyClick(row)}>修改</Button> */}
+                <Button size="small" color="primary" onClick={() => this.setState({ isOpenDialog: true, currentTask: row })}>详情</Button>
             </div>
         </TableCell>
     </TableRow>
 
+    renderTitle = () => <TitleDiv>
+        <div>{'任务列表'}</div>
+        <div style={{ display: 'flex' }}>
+            <Button color="primary" onClick={() => this.setState({ isOpenDialog: true, currentTask: defaultValues.task })}>添加</Button>
+        </div>
+    </TitleDiv>
+
+    onCommit = task => {
+        const { platformId, startTime, endTime, pageIndex, pageSize } =this.state;
+        this.setState({ isOpenDialog: false, currentTask: null });
+        this.props.dispatch(taskActions.addOrUpateTask(task,{platformId, startTime, endTime, pageIndex, pageSize}));
+    }
 
     onPageIndexChange = (event, idx) => {
-        const {platformID,pageSize,startTime,endTime,pageIndex}=this.state;
-        if(pageIndex!==idx+1){
-            this.setState({ pageIndex: idx+1 });      
-            this.props.dispatch(taskActions.getTasks(platformID,startTime,endTime, idx + 1, pageSize));
-        }      
+        const { platformID, pageSize, startTime, endTime, pageIndex } = this.state;
+        if (pageIndex !== idx + 1) {
+            this.setState({ pageIndex: idx + 1 });
+            this.props.dispatch(taskActions.getTasks(platformID, startTime, endTime, idx + 1, pageSize));
+        }
     };
 
     onPageSizeChange = event => {
         this.setState({ pageIndex: 1, pageSize: event.target.value });
-        const {platformID,startTime,endTime}=this.state;
-        this.props.dispatch(taskActions.getTasks(platformID,startTime,endTime,  1, event.target.value));
+        const { platformID, startTime, endTime } = this.state;
+        this.props.dispatch(taskActions.getTasks(platformID, startTime, endTime, 1, event.target.value));
     };
 
     componentDidMount() {
         const { dispatch } = this.props;
-        const {platformID,pageSize,startTime,endTime}=this.state;
-        
-        dispatch(taskActions.getTasks(platformID,startTime,endTime,1,pageSize));
+        const { platformID, pageSize, startTime, endTime } = this.state;
+
+        dispatch(taskActions.getTasks(platformID, startTime, endTime, 1, pageSize));
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps != null) {           
-            const { currentTask, platforms,  alertMessage, totalCount, tasks } = nextProps;
-            this.setState({ task: currentTask, platforms,  alertMessage, totalCount, rows: tasks });
+        if (nextProps != null) {
+            const { taskTags,  platforms, alertMessage, totalCount, tasks } = nextProps;
+            this.setState({ taskTags,   platforms, alertMessage, totalCount, rows: tasks });
         }
     }
 
     render() {
-        const { rows, pageSize, pageIndex, totalCount } = this.state;
-       
+        const { taskTags, platforms, rows, pageSize, pageIndex, totalCount, currentTask, isOpenDialog } = this.state;
+
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
-            <Container title={'任务列表'} >
+            <CustomDialog
+                onClose={()=>this.setState({isOpenDialog:false})}
+                isOpen={isOpenDialog === true}
+                title={currentTask == null ? '' : currentTask.taskID != null ? '修改任务' : '新建任务'} >
+                <Task task={currentTask} platforms={platforms} taskTags={taskTags} onCommit={this.onCommit} />
+            </CustomDialog>
+            <Container title={this.renderTitle()} >
                 <DataTable
                     rows={rows}
                     pageSize={pageSize}
-                    pageIndex={pageIndex-1}
+                    pageIndex={pageIndex - 1}
                     totalCount={totalCount}
                     onPageIndexChange={this.onPageIndexChange}
                     onPageSizeChange={this.onPageSizeChange}
@@ -108,8 +125,7 @@ class TaskList extends Component {
     }
 }
 
-
-const mapStateToProps = (state) => {return { ...state.location, ...state.task };}
+const mapStateToProps = (state) => { return { ...state.location, ...state.task }; }
 
 const instance = withRouter(connect(mapStateToProps)(TaskList));
 

@@ -14,7 +14,7 @@ export const routeUrls={
 
 
     /**
-     * 卡券配置列表
+     * 卡券列表
      */
     GIFT_LIST:'/Gift/SGiftListT',
 

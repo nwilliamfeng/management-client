@@ -92,8 +92,6 @@ class NavigateBar extends React.Component {
     };
 
 
-
-
     handleDataSumItemDropdwon = () => this.setState(state => ({ isDataSumItemOpen: !state.isDataSumItemOpen }));
 
     handleCardManageItemDropdwon = () => this.setState(state => ({ isCardManageItemOpen: !state.isCardManageItemOpen }));
@@ -112,16 +110,16 @@ class NavigateBar extends React.Component {
         { category: categories.DATA_SUM, url: routeUrls.DAY_REPORT, title: '数据大盘(日报表)' },
         { category: categories.DATA_SUM, url: routeUrls.MONTH_REPORT, title: '月报表' },
         { category: categories.DATA_SUM, url: routeUrls.CLEAR_DATA, title: '积分卡券每日统计'},
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_LIST, title: '卡券配置列表' },
+        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_LIST, title: '卡券列表' },
         { category: categories.CARD_MANAGE, url: routeUrls.GIFT_STRATEGY, title: '卡券策略管理'},
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_ADD_UPDATE, title: '卡券添加' },
-        { category: categories.CARD_MANAGE, url: routeUrls.GIFT_STRATEGY_ADD_UPDATE, title: '卡券策略添加' },
+        // { category: categories.CARD_MANAGE, url: routeUrls.GIFT_ADD_UPDATE, title: '卡券添加' },
+        // { category: categories.CARD_MANAGE, url: routeUrls.GIFT_STRATEGY_ADD_UPDATE, title: '卡券策略添加' },
         { category: categories.CARD_MANAGE, url: routeUrls.GIFT_CHECK_OP, title: '待复核列表' },
         { category: categories.USER_MANAGE, url: routeUrls.USER_LIST, title: '用户列表' },
         { category: categories.USER_MANAGE, url: routeUrls.USER_POINT_FLOW, title: '用户积分变动' },
         { category: categories.USER_MANAGE, url: routeUrls.USER_CARD_LIST, title: '用户卡券列表' },
         { category: categories.TASK_MANAGE, url: routeUrls.TASK_LIST, title: '任务列表' },
-        { category: categories.TASK_MANAGE, url: routeUrls.TASK_ADD_UPDATE, title: '添加任务' },
+        // { category: categories.TASK_MANAGE, url: routeUrls.TASK_ADD_UPDATE, title: '添加任务' },
         { category: categories.TASK_MANAGE, url: routeUrls.TASK_TAG_LIST, title: '任务标签列表' },
         // { category: categories.TASK_MANAGE, url: routeUrls.TASK_TAG_ADD_UPDATE, title: '添加任务标签' },
         { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_USERGIFT_FREEZING, title: '卡券冻结列表' },
@@ -138,7 +136,7 @@ class NavigateBar extends React.Component {
 
                 <ModuleListItem icon={faTable} title={'数据统计'} isDropdown={this.state.isDataSumItemOpen} dropDownHandle={this.handleDataSumItemDropdwon}
                     subItems={this.subItems.filter(x => x.category === categories.DATA_SUM)} />
-                <ModuleListItem icon={faEdit} title={'卡券配置管理'} isDropdown={this.state.isCardManageItemOpen} dropDownHandle={this.handleCardManageItemDropdwon}
+                <ModuleListItem icon={faEdit} title={'卡券管理'} isDropdown={this.state.isCardManageItemOpen} dropDownHandle={this.handleCardManageItemDropdwon}
                     subItems={this.subItems.filter(x => x.category === categories.CARD_MANAGE)} />
                 <ModuleListItem icon={faUserFriends} title={'用户管理'} isDropdown={this.state.isUserManageItemOpen} dropDownHandle={this.handleUserManageItemDropdwon}
                     subItems={this.subItems.filter(x => x.category === categories.USER_MANAGE)} />

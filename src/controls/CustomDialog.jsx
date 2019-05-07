@@ -42,47 +42,73 @@ const DialogContent = withStyles(theme => ({
 
 
 
-export class CustomDialog extends React.Component {
+// export class CustomDialog extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            open: false,
-        };
-    }
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//             open: false,
+//         };
+//     }
 
 
-    handleClose = () => {
-        this.setState({ open: false });
-    };
+//     handleClose = () => {
+//         this.setState({ open: false });
+//     };
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps != null) {
-            const { isOpen, title, executeConfirm } = nextProps;
-            this.setState({ open: isOpen, title, executeConfirm });
-        }
-    }
+//     componentWillReceiveProps(nextProps, nextContext) {
+//         if (nextProps != null) {
+//             const { isOpen, title, isMaxWidth,onClose  } = nextProps;
+//             this.setState({ open: isOpen, title,isMaxWidth,onClose  });
+//         }
+//     }
 
-    render() {
-        return (<Dialog
-            disableBackdropClick
-            disableEscapeKeyDown
-            onClose={this.handleClose}
-            aria-labelledby="customized-dialog-title"
-            open={this.state.open}>
-            <DialogTitle id="customized-dialog-title" onClose={this.handleClose}>
-                {this.state.title}
-            </DialogTitle>
-            <DialogContent>
-                {this.props.children}
-            </DialogContent>
-            {/* <DialogActions>
+//     render() {
+//         return (<Dialog
+//         maxWidth={this.props.isMaxWidth===true?"lg":false}
+//             disableBackdropClick
+//             disableEscapeKeyDown
+//             onClose={()=>this.props.onClose()}
+//             aria-labelledby="customized-dialog-title"
+//             open={this.props.isOpen}>
+//             <DialogTitle id="customized-dialog-title" onClose={()=>this.props.onClose()}>
+//                 {this.state.title}
+//             </DialogTitle>
+//             <DialogContent>
+//                 {this.props.children}
+//             </DialogContent>
+//             {/* <DialogActions>
+//                 <Button onClick={this.handleConfirm} color="primary">
+//                     确定
+//             </Button>
+//             </DialogActions> */}
+//         </Dialog>
+//         );
+//     }
+// }
+
+export const CustomDialog = props => {
+    const { isOpen, title, isMaxWidth, onClose } =props;
+    return (<Dialog
+        maxWidth={isMaxWidth === true ? "lg" : false}
+        disableBackdropClick
+        disableEscapeKeyDown
+        onClose={() => onClose()}
+        aria-labelledby="customized-dialog-title"
+        open={isOpen}>
+        <DialogTitle id="customized-dialog-title" onClose={() => onClose()}>
+            {title}
+        </DialogTitle>
+        <DialogContent>
+            {props.children}
+        </DialogContent>
+        {/* <DialogActions>
                 <Button onClick={this.handleConfirm} color="primary">
                     确定
             </Button>
             </DialogActions> */}
-        </Dialog>
-        );
-    }
+    </Dialog>
+    );
+
 }
 

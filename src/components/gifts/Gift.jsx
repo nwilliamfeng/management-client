@@ -25,7 +25,7 @@ const fieldStyles = {
     firstColumn: { width: 200 },
 }
 
-class Task extends Component {
+class Gift extends Component {
 
     constructor(props) {
         super(props);
@@ -154,8 +154,8 @@ class Task extends Component {
     }
 }
 
-const mapStateToProps = (state) => { return { ...state.location, ...state.task }; }
+const mapStateToProps = (state) => { return { ...state.location, ...state.gift }; }
 
-const task = connect(mapStateToProps)(Task) ;
+const gift = connect(mapStateToProps)(Gift) ;
 
-export { task as Task };
+export { gift as Gift };

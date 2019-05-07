@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as Yup from 'yup';
 import { isBoolean, isDate } from 'util';
@@ -80,6 +79,6 @@ const mapStateToProps = (state) => {
     return { ...state.location, ...state.task };
 }
 
-const tag = withRouter(connect(mapStateToProps)(TaskTag));
+const tag = connect(mapStateToProps)(TaskTag);
 
 export { tag as TaskTag };
