@@ -11,4 +11,4 @@ export * from './Dialog'
 
 export * from './CustomDialog'
 
-export * from './SearchPanel'
+export * from './Search'

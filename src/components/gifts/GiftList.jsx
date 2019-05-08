@@ -9,7 +9,8 @@ import { giftActions } from '../../actions'
 import moment from 'moment'
 import { defaultValues } from '../helper'
 import { Container, TitleDiv } from '../part'
-import { Search } from '../../controls'
+import { Search ,SearchType} from '../../controls'
+import {Gift} from './Gift'
 
 /**
  * 卡券列表
@@ -33,36 +34,33 @@ class GiftList extends Component {
                 isDel: false,
                 pageIndex: 1,
                 pageSize: 10,
-                startTime: '0001-01-01',
+                startTime:'0001-01-01',
                 endTime: moment().format('YYYY-MM-DD'),
             }
         };
     }
 
-    renderHeader = () => <TableRow>
+    renderTableHeader = () => <TableRow>
         <TableCell>卡券编号</TableCell>
         <TableCell>卡券名称</TableCell>
         <TableCell>卡券简述</TableCell>
         <TableCell>卡券类型</TableCell>
         <TableCell>卡券面值</TableCell>
         <TableCell>活动名称</TableCell>
-        <TableCell>添加人员</TableCell>
-        <TableCell>添加时间</TableCell>
+        <TableCell>添加人员/时间</TableCell>  
         <TableCell>操作</TableCell>
     </TableRow>
 
-    getGiftState = state => state === 0 ? "全部" : state === 2 ? "已上架" : "未上架";
+    getGiftStates =()=>{return [{value:0,name:'全部'},{value:2,name:'已上架'},{value:1,name:'未上架'}] }
 
-    renderRow = row => <TableRow key={row.giftId}>
+    renderTableRow = row => <TableRow key={row.giftId}>
         <TableCell>{row.giftId}</TableCell>
         <TableCell>{row.name}</TableCell>
-        <TableCell>{row.description}</TableCell>
+        <TableCell>{row.shortDesc}</TableCell>
         <TableCell>{this.state.giftTypes.find(x => x.value === row.giftType).name}</TableCell>
         <TableCell>{row.giftValue}</TableCell>
         <TableCell>{row.activeName}</TableCell>
-        {/* <TableCell>{this.getTaskState(row.taskState)}</TableCell> */}
-        <TableCell>{row.operator}</TableCell>
-        <TableCell>{row.createTime}</TableCell>
+        <TableCell>{`${row.operator}/${row.createTime}`}</TableCell>
         <TableCell>
             <div style={{ display: 'flex' }}>
                 <Button size="small" color="primary" onClick={() => this.setState({ isOpenDialog: true, currentGift: row })}>详情</Button>
@@ -70,14 +68,27 @@ class GiftList extends Component {
         </TableCell>
     </TableRow>
 
-    renderTitle = () => <div style={{ width: '100%', textAlign: 'left' ,marginBottom:15}}>
-        <TitleDiv style={{marginBottom:15}}>
-            <div>{'任务列表'}</div>
+    renderSearch=()=>{
+        const items=[
+            {name:'卡券编号',  onChange:e=>this.setState({searchCondition:{...this.state.searchCondition,giftId:e.target.value}}) },
+            {name:'活动名称', onChange:e=>this.setState({searchCondition:{...this.state.searchCondition,activeName:e.target.value}}) },
+            {name:'卡券类型',selectValue:this.state.searchCondition.giftType ,selectItems:this.state.giftTypes ,searchType:SearchType.SELECT, onChange:e=>this.setState({searchCondition:{...this.state.searchCondition,giftType:e.target.value}}) },
+            {name:'卡券状态',selectValue:this.state.searchCondition.giftState ,selectItems:this.getGiftStates() ,searchType:SearchType.SELECT, onChange:e=>this.setState({searchCondition:{...this.state.searchCondition,giftState:e.target.value}}) },
+            // {name:'开始日期',selectValue:this.state.searchCondition.startTime  ,searchType:SearchType.DATE, onChange:e=>this.setState({searchCondition:{...this.state.searchCondition,startTime:e.target.value}}) },
+            // {name:'结束日期',selectValue:this.state.searchCondition.endTime  ,searchType:SearchType.DATE, onChange:e=>this.setState({searchCondition:{...this.state.searchCondition,endTime:e.target.value}}) },          
+        ]
+        return <Search items={items}/>
+    }
+
+    renderTitle = () => <div style={{ width: '100%', textAlign: 'left'  }}>
+        <TitleDiv >
+            <div>{'卡券列表'}</div>
             <div style={{ display: 'flex' }}>
-                <Button color="primary" onClick={() => this.setState({ isOpenDialog: true, currentGift: defaultValues.task })}>添加</Button>
+                <Button color="primary" onClick={() => this.props.dispatch(giftActions.getGifts({ ...this.state.searchCondition }))}>查询</Button>
+                <Button color="primary" onClick={() => this.setState({ isOpenDialog: true, currentGift: defaultValues.gift })}>添加</Button>
             </div>
         </TitleDiv>
-        <Search  />
+        {this.renderSearch()}
     </div>
 
     onCommit = task => {
@@ -96,7 +107,6 @@ class GiftList extends Component {
     };
 
     onPageSizeChange = event => {
-
         const { searchCondition } = this.state;
         searchCondition.pageIndex = 1;
         searchCondition.pageSize = event.target.value;
@@ -113,29 +123,22 @@ class GiftList extends Component {
     componentWillReceiveProps(nextProps, nextContext) {
         if (nextProps != null) {
             const { giftTypes, alertMessage, totalCount, gifts } = nextProps;
-            console.log(nextProps);
             this.setState({ giftTypes, alertMessage, totalCount, rows: gifts });
         }
     }
 
-    render() {
+    render() {       
         const { giftTypes, rows, searchCondition, totalCount, currentGift, isOpenDialog } = this.state;
         const { pageSize, pageIndex } = searchCondition;
-
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
-            {/* <CustomDialog
+            <CustomDialog
                 onClose={() => this.setState({ isOpenDialog: false })}
                 isOpen={isOpenDialog === true}
                 title={currentGift == null ? '' : currentGift.giftId != null ? '修改卡券' : '新建卡券'} >
-                <Task task={currentGift} platforms={platforms} taskTags={taskTags} onCommit={this.onCommit} />
-
-             
-            </CustomDialog> */}
-
-
+                <Gift gift={currentGift} giftTypes={giftTypes}   onCommit={this.onCommit} />           
+            </CustomDialog>
             <Container title={this.renderTitle()} >
-
                 <DataTable
                     rows={rows}
                     pageSize={pageSize}
@@ -143,12 +146,10 @@ class GiftList extends Component {
                     totalCount={totalCount}
                     onPageIndexChange={this.onPageIndexChange}
                     onPageSizeChange={this.onPageSizeChange}
-                    renderHeader={this.renderHeader}
-                    renderRow={this.renderRow}
+                    renderHeader={this.renderTableHeader}
+                    renderRow={this.renderTableRow}
                     needPagination={true}>
                 </DataTable>
-
-
             </Container>
         </React.Fragment>
     }

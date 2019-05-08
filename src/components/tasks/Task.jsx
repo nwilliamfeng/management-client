@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as Yup from 'yup';
-import { taskActions } from '../../actions'
 import { isBoolean, isDate } from 'util';
 import { Formik, Form } from 'formik';
-import { Grid } from '@material-ui/core/Grid';
 import { MenuItem, Button, } from '@material-ui/core';
 import { GridSwitch, GridDatePickerField, GridTextField, GridSelectField, GridRow } from '../helper'
-
 
 /**
  * 验证模板
@@ -21,9 +17,7 @@ const validationSchema = Yup.object().shape({
     taskExpireDays: Yup.number().notOneOf([0], '请输入领取任务有效天数。'),
 })
 
-const fieldStyles = {
-    firstColumn: { width: 200 },
-}
+const fieldStyles = {firstColumn: { width: 200 },}
 
 class Task extends Component {
 
@@ -44,14 +38,6 @@ class Task extends Component {
         const ptmid = parseInt(e.target.value);
         this.setState({ task: { ...this.state.task, platformID: ptmid, tagId: 0 } });
     }
-
-    
-    // componentWillReceiveProps(nextProps, nextContext) {
-    //     if (nextProps != null) {
-    //         const { currentTask, platforms, taskTags, alertMessage } = nextProps;
-    //         this.setState({ task: currentTask, platforms, taskTags, alertMessage });
-    //     }
-    // }
 
    // needCreate = () => this.props.location.search === ''; //  console.log(this.props); //this.props.location.search -- ?id=abc
 
@@ -76,14 +62,12 @@ class Task extends Component {
     }
 
     render() {
-        
         const { task, platforms, taskTags, taskTypes, taskSubTypes,onCommit } = this.state;
-        console.log(task);
         return < Formik
             initialValues={task}
             enableReinitialize={true}
             validationSchema={validationSchema}
-            onSubmit={values =>onCommit(values)    }
+            onSubmit={values =>onCommit(values)}
             render={({ errors, }) => (
                    <Form >
                        <div style={{padding:10}}>
@@ -126,10 +110,8 @@ class Task extends Component {
                         <GridRow style={{ marginTop: 35, marginBottom: 35 }}>
                             <GridTextField name="dayTimes" value={task.dayTimes} style={fieldStyles.firstColumn} label="单用户每天可完成任务次数" errors={errors} onChange={this.onPropertyChange} />
                             <GridTextField name="totalTimes" value={task.totalTimes} label="单用户可完成任务总次数" errors={errors} onChange={this.onPropertyChange} />
-                            <GridTextField name="dayLimit" value={task.dayLimit} style={{ width: 220 }} label="所有用户每天可完成任务次数" errors={errors} onChange={this.onPropertyChange} />
-                            
+                            <GridTextField name="dayLimit" value={task.dayLimit} style={{ width: 220 }} label="所有用户每天可完成任务次数" errors={errors} onChange={this.onPropertyChange} />                           
                         </GridRow>
-
                         <GridRow style={{  marginBottom: 35 }}>
                             <GridTextField name="dayTimes" value={task.dayTimes} style={fieldStyles.firstColumn} label="单用户每天可完成任务次数" errors={errors} onChange={this.onPropertyChange} />
                             <GridTextField name="totalTimes" value={task.totalTimes} label="单用户可完成任务总次数" errors={errors} onChange={this.onPropertyChange} />
@@ -142,11 +124,8 @@ class Task extends Component {
                             <GridTextField name="taskMinPoint" value={task.taskMinPoint} style={fieldStyles.firstColumn} label="任务的最小积分" errors={errors} onChange={this.onPropertyChange} />
                             <GridTextField name="taskMaxPoint" value={task.taskMaxPoint} style={fieldStyles.firstColumn} label="任务的最大积分" errors={errors} onChange={this.onPropertyChange} />
                         </GridRow>
-                       </div>
-                      
-                    
+                       </div>                                     
                     <hr style={{ border: 'none', borderBottom: 'solid 1px lightgray', marginLeft: -15, marginRight: -15, marginTop:10 }} />
-
                     <Button variant="contained" color="primary" style={{ marginTop: 5 }} type="commit">保存</Button>
                 </Form>
             )}

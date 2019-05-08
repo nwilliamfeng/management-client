@@ -11,7 +11,6 @@ import { Task } from './Task'
 import { defaultValues } from '../helper'
 import {Container,TitleDiv} from '../part'
 
-
 class TaskList extends Component {
 
     constructor(props) {

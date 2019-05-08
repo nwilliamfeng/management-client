@@ -7,14 +7,8 @@ import moment from 'moment';
 class GiftApi {
 
     async loadGifts(giftId, startTime, endTime, activeName, giftType, giftState, isEnabled, isDel, pageIndex = 1, pageSize = 20) {
-        const result = await ApiHelper.get(`/gift/loadGifts?giftId=${giftId}&startTime=${startTime}&endTime=${endTime}
-        &activeName=${activeName}
-        &giftType=${giftType}
-        &giftState=${giftState}
-        &isEnabled=${isEnabled}
-        &isDel=${isDel}
-        &pageIndex=${pageIndex}
-        &pageSize=${pageSize}`);
+            
+        const result =await ApiHelper.post('/gift/loadGifts',{giftId, startTime, endTime, activeName, giftType, giftState, isEnabled, isDel, pageIndex  , pageSize });
 
         result.data.forEach(x => {
             x.expireTime = moment(x.expireTime).format('YYYY-MM-DD');
@@ -27,6 +21,7 @@ class GiftApi {
 
     getGiftTypes() {
         return [
+            // { name: '全部', value: 0 },
             { name: '现金券', value: 1 },
             { name: '满返券', value: 5 },
             { name: '满减券', value: 6 },

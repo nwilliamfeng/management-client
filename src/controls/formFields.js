@@ -65,6 +65,16 @@ export const FormDatePickerField = ({ name, onChange, label, value, style }) => 
     InputLabelProps={{ shrink: true, }}
 />
 
+export const FormDateTimePickerField = ({ name, onChange, label, value, style }) => <TextField
+    name={name}
+    style={style}
+    onChange={onChange}
+    label={label}
+    type="datetime-local"
+    value={value}
+    InputLabelProps={{ shrink: true, }}
+/>
+
 export const FormTextField = ({ name, value, label, errors, onChange, style }) => <TextField
     name={name}
     value={value != null ? value : ''}
@@ -103,7 +113,7 @@ export const FormTextAreaField = ({ name, value, label, errors, onChange, style,
     rows={rows}
     //variant="outlined"
 
-    InputLabelProps={{ shrink: true, }}
+     InputLabelProps={{ shrink: value!=null && value.length>0, }}
     label={label}
     error={Boolean(errors[name])}
     helperText={errors[name]}
