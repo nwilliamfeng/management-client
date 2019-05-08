@@ -91,7 +91,8 @@ class GiftList extends Component {
         {this.renderSearch()}
     </div>
 
-    onCommit = task => {
+    onCommit = gift => {
+        console.log(gift);
         const { platformId, startTime, endTime, pageIndex, pageSize } = this.state;
         this.setState({ isOpenDialog: false, currentGift: null });
         // this.props.dispatch(taskActions.addOrUpateTask(task, { platformId, startTime, endTime, pageIndex, pageSize }));

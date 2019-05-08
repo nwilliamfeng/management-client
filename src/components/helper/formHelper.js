@@ -1,6 +1,25 @@
 import { isBoolean, isDate } from 'util';
+import  moment from 'moment'
 
 class FormHelper {
+
+    setDateFormat(obj,propertyNames=[]){
+      propertyNames.forEach(name=>{
+        if( obj[name]!=null){
+            obj[name]=moment(obj[name]).format('YYYY-MM-DDTHH:MM:ss');
+        }
+      })  
+      return obj;
+    }
+
+    revertDateFormat(obj,propertyNames=[]){
+        propertyNames.forEach(name=>{
+            if( obj[name]!=null){
+                obj[name]=obj[name].replace('T',' ');
+            }
+          })  
+        return obj;
+    }
 
     setTagetPropertyValueByEvent(obj, e) {
  

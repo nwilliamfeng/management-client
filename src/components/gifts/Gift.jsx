@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import * as Yup from 'yup';
-import { giftActions } from '../../actions'
-import { isBoolean, isDate } from 'util';
 import { Formik, Form } from 'formik';
 import { formHelper, GridTextAreaField } from '../helper'
 import { MenuItem, Button, } from '@material-ui/core';
-import { GridSwitch, GridDatePickerField, GridDateTimePickerField, GridTextField, GridSelectField, GridRow } from '../helper'
+import { GridSwitch,  GridDateTimePickerField, GridTextField, GridSelectField, GridRow } from '../helper'
 
 
 const validationSchema = Yup.object().shape({
     // platformID: Yup.string().required('平台类型不能为空。'),
     // tagId: Yup.number().notOneOf([0], '请选择任务标签。'),
     //  name: Yup.string().required('任务名称不能为空。'),
-
 })
 
 const fieldStyles = {
@@ -25,6 +22,7 @@ class Gift extends Component {
     constructor(props) {
         super(props);
         const { gift, onCommit, giftTypes } = props;
+        formHelper.setDateFormat(gift,['beginTime','endTime','expireTime']);
         this.state = {
             gift,
             companys: [{ name: '其他', value: '000' }, { name: '东方财富', value: '001' }, { name: '天天基金', value: '003' }, { name: '基金公司活动', value: '004' }, { name: '基金公司天天基金联合活动', value: '005' },],
@@ -33,11 +31,6 @@ class Gift extends Component {
             onCommit,
             giftTypes,
         };
-    }
-
-    onGiftTypeChange = (e) => {
-        const ptmid = parseInt(e.target.value);
-        this.setState({ task: { ...this.state.task, platformID: ptmid, tagId: 0 } });
     }
 
     onPropertyChange = e => {
@@ -57,7 +50,6 @@ class Gift extends Component {
                 {(giftType !== 7) && <GridTextField name="point" label="兑换积分" value={gift.point} errors={errors} onChange={this.onPropertyChange} />}
                 {(giftType === 7) && <GridTextField name="giftValMin" label="卡券最小面值" value={gift.giftValMin} errors={errors} onChange={this.onPropertyChange} />}
                 {(giftType === 7) && <GridTextField name="giftValMax" label="卡券最大面值" value={gift.giftValMax} errors={errors} onChange={this.onPropertyChange} />}
-
             </GridRow>
             {(giftType === 9 || giftType === 10 || giftType === 11) && <GridRow style={{ marginTop: 30 }}>
                 <div style={{ marginTop: -10, width: 220, display: 'flex', justifyContent: 'left', alignItems: 'center', paddingLeft: 20 }}>
@@ -67,24 +59,19 @@ class Gift extends Component {
                 <div style={{ marginTop: -10, width: 220, display: 'flex', justifyContent: 'left', alignItems: 'center', paddingLeft: 20 }}>
                     <GridSwitch name="isHomePageDisplay" value={gift ? gift.isHomePageDisplay : false} label="是否财富商城首页展示" onChange={this.onPropertyChange} />
                 </div>
-
                 <GridTextField name="supServiceName" label="外部供应商名称" value={gift.supServiceName} errors={errors} onChange={this.onPropertyChange} />
                 <GridTextField name="supServiceSku" style={{ width: 250 }} label="外部供应商提供的活动商品编码" value={gift.supServiceSku} errors={errors} onChange={this.onPropertyChange} />
-
             </GridRow>}
-
         </div>
     }
 
     render() {
-
         const { gift, giftTypes, onCommit, payTypes, supportTypes, companys } = this.state;
-        console.log(gift);
         return < Formik
             initialValues={gift}
             enableReinitialize={true}
             validationSchema={validationSchema}
-            onSubmit={values => onCommit(values)}
+            onSubmit={values => onCommit(formHelper.revertDateFormat( values,['beginTime','endTime','expireTime']))}
             render={({ errors, }) => (
                 <Form >
                     <div style={{ padding: 10 }}>
@@ -93,7 +80,6 @@ class Gift extends Component {
                             <GridTextField name="giftTag" value={gift.giftTag} label="卡券标签" errors={errors} onChange={this.onPropertyChange} />
                             <GridTextField name="shotDesc" value={gift.shotDesc} label="卡券简述" errors={errors} onChange={this.onPropertyChange} />
                             <GridTextAreaField name="description" style={{ marginRight: 15 }} value={gift.description} label="卡券描述" errors={errors} onChange={this.onPropertyChange} />
-
                         </GridRow>
                         <GridRow>
                             <GridSelectField name="giftType" style={{ width: 200 }} value={gift.giftType} errors={errors} label={'卡券类型'} onChange={this.onPropertyChange}>
@@ -105,12 +91,10 @@ class Gift extends Component {
                             <GridTextField name="amountLimit" label="卡券使用交易金额" value={gift.amountLimit} errors={errors} onChange={this.onPropertyChange} />
                         </GridRow>
                         {this.renderChildByGiftType({ errors })}
-
                         <GridRow style={{ marginTop: 20 }}>
                             <GridSelectField style={{ width: 200 }} name="supportType" value={gift.supportType} errors={errors} label={'发券方式'} shrink={true} onChange={this.onPropertyChange}>
                                 {supportTypes.map(x => <MenuItem key={x.value} value={x.value}>{x.name}</MenuItem>)}
                             </GridSelectField>
-
                             <GridSelectField style={{ width: 200 }} name="companyId" value={gift.companyId} errors={errors} label={'发券平台'} shrink={true} onChange={this.onPropertyChange}>
                                 {companys.map(x => <MenuItem key={x.value} value={x.value}>{x.name}</MenuItem>)}
                             </GridSelectField>
