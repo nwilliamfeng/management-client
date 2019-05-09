@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { formHelper, GridTextAreaField } from '../helper'
@@ -11,13 +10,20 @@ const validationSchema = Yup.object().shape({
     // platformID: Yup.string().required('平台类型不能为空。'),
     // tagId: Yup.number().notOneOf([0], '请选择任务标签。'),
     //  name: Yup.string().required('任务名称不能为空。'),
+
+    // let schema = yup.object({
+    //     isBig: yup.boolean(),
+    //     count: yup.number().when('isBig', (isBig, schema) => {
+    //       return isBig ? schema.min(5) : schema.min(0);
+    //     }),
+    //   });
 })
 
 const fieldStyles = {
     firstColumn: { width: 200 },
 }
 
-class Gift extends Component {
+export class Gift extends Component {
 
     constructor(props) {
         super(props);
@@ -128,8 +134,4 @@ class Gift extends Component {
     }
 }
 
-const mapStateToProps = (state) => { return { ...state.location, ...state.gift }; }
-
-const gift = connect(mapStateToProps)(Gift);
-
-export { gift as Gift };
+ 

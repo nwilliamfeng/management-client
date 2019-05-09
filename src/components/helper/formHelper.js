@@ -3,6 +3,9 @@ import  moment from 'moment'
 
 class FormHelper {
 
+     /**
+     * 将对象的日期属性字符串转换成datepicker支持的字符串 如 2018-09-11 11:12:03 转成 2018-09-11T11:12:03
+     */
     setDateFormat(obj,propertyNames=[]){
       propertyNames.forEach(name=>{
         if( obj[name]!=null){
@@ -12,6 +15,9 @@ class FormHelper {
       return obj;
     }
 
+    /**
+     * 将对象的日期属性值datepicker支持的字符串形式转换成通用的字符串 如 2018-09-11T11:12:03 转成 2018-09-11 11:12:03
+     */
     revertDateFormat(obj,propertyNames=[]){
         propertyNames.forEach(name=>{
             if( obj[name]!=null){

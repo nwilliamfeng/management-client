@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 import * as Yup from 'yup';
 import { isBoolean, isDate } from 'util';
 import { Formik, Form } from 'formik';
 import { MenuItem, Button, } from '@material-ui/core';
 import { GridTextAreaField, GridSwitch, GridTextField, GridSelectField } from '../helper'
-import Divider from '@material-ui/core/Divider';
+
 
 /**
  * 验证模板
@@ -17,7 +16,7 @@ const validationSchema = Yup.object().shape({
 })
 
 
-class TaskTag extends Component {
+export class TaskTag extends Component {
 
     constructor(props) {
         super(props);
@@ -75,11 +74,3 @@ class TaskTag extends Component {
         />
     }
 }
-
-const mapStateToProps = (state) => {
-    return { ...state.location, ...state.task };
-}
-
-const tag = connect(mapStateToProps)(TaskTag);
-
-export { tag as TaskTag };

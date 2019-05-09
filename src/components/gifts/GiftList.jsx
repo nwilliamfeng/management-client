@@ -28,14 +28,14 @@ class GiftList extends Component {
             searchCondition: {
                 giftId: null,
                 activeName: null,
-                giftType: 0,
-                giftState: 0,
+                giftType: -1,
+                giftState: -1,
                 isEnabled: true,
                 isDel: false,
                 pageIndex: 1,
                 pageSize: 10,
                 startTime:'0001-01-01',
-                endTime: moment().format('YYYY-MM-DD'),
+                endTime: moment().add(1, 'days').format('YYYY-MM-DD'),
             }
         };
     }

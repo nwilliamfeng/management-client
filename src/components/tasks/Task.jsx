@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 import * as Yup from 'yup';
 import { isBoolean, isDate } from 'util';
 import { Formik, Form } from 'formik';
@@ -19,7 +18,7 @@ const validationSchema = Yup.object().shape({
 
 const fieldStyles = {firstColumn: { width: 200 },}
 
-class Task extends Component {
+export class Task extends Component {
 
     constructor(props) {
         super(props);
@@ -133,8 +132,3 @@ class Task extends Component {
     }
 }
 
-const mapStateToProps = (state) => { return { ...state.location, ...state.task }; }
-
-const task = connect(mapStateToProps)(Task) ;
-
-export { task as Task };

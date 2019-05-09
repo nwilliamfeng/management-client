@@ -32,11 +32,16 @@ const Div = styled.div`
 `
 
 const SearchItem = ({ condition }) => {
-    const { searchType, name, onChange, selectItems, selectValue } = condition;
+    const { searchType, name, onChange, selectItems, selectValue,onKeyDown } = condition;
+    const handleKeyDown=e=>{
+         if(e.key==='Enter' && onKeyDown!=null){
+             onKeyDown();
+         }
+    };
     return <div style={{ paddingRight: 8 }}>
         {(searchType == null || searchType === SearchType.TEXT) && <TextField
-
             label={name}
+            onKeyDown={handleKeyDown}
             onChange={onChange}
             name={name}
             margin="normal"
@@ -65,7 +70,6 @@ export const Search = ({ items }) => {
     return <div style={{ display: 'flex',alignItems:'center' }}>
         <div style={{ fontSize: 14, width: 80 }}>{'查询条件：'}</div>
         <Div>
-
             {items.map(x => <SearchItem key={x.name} condition={x} />)}
         </Div>
     </div>
