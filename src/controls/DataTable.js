@@ -5,8 +5,13 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import { Pagination } from './Pagination'
-import { TableHead } from '@material-ui/core';
+import { TableHead, TableCell } from '@material-ui/core';
 
+
+export const Total=({from,to,count,page})=><React.Fragment>
+    {count>0 && <div>{`共${count}条记录，当前第${page+1}页`}</div>}
+    {count===0 && <div>{`共${count}条记录`}</div>}
+    </React.Fragment>
 
 export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader, renderRow,onPageIndexChange,onPageSizeChange ,needPagination}) => {
     //const emptyRows = pageSize - Math.min(pageSize, rows.length - pageIndex * pageSize);
@@ -17,11 +22,10 @@ export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader,
         </TableHead>
         <TableBody>
             {renderRow && rows.map(row => renderRow(row))}
-            {/* {emptyRows > 0 && (
-                <TableRow style={{ height: 48 * emptyRows }}>
-                    <TableCell colSpan={6} />
-                </TableRow>
-            )} */}
+            {rows && rows.length===0 && <TableRow>
+                <TableCell style={{textAlign:'center'}} colSpan={100}> {'没有找到记录'}</TableCell>
+                </TableRow>}
+          
         </TableBody>
         {needPagination===true && <TableFooter>
             <TableRow>
@@ -35,6 +39,7 @@ export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader,
                     SelectProps={{
                         native: true,
                     }}
+                    labelDisplayedRows={p=><Total  {...p}/>}
                     onChangePage={onPageIndexChange}
                     onChangeRowsPerPage={onPageSizeChange}
                     ActionsComponent={Pagination}
