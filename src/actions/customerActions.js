@@ -4,9 +4,11 @@ import { customerApi,giftApi } from '../api'
 import { buildMessage } from './messageHelper'
 
 export const customerActions = {
-    getUserPoints: getUserPoints,
-    getUserPointFlowsFromDayReport: getUserPointFlowsFromDayReport,
-    getUserGiftList:getUserGiftList,
+    getUserPoints,
+    getUserPointFlowsFromDayReport,
+    getUserGiftList,
+    getUserGiftListByUserId,
+    getUserPointFlowListByUserId,
 }
 
 function getUserPoints({userId, pageIndex, pageSize}) {
@@ -50,6 +52,35 @@ function getUserGiftList({userId, usergiftId, giftId, giftType, giftState, pageI
         }
     }
 }
+
+function getUserGiftListByUserId({userId,pageIndex,pageSize}){
+    return async dispatch => {
+        try {          
+         
+            const result = await customerApi.getCustomerGiftListByUserId(userId,  pageIndex, pageSize);
+            const giftStates= customerApi.getUserGiftStates();
+            const giftTypes =giftApi.getGiftTypes();
+            dispatch({ type: customerConstants.LOAD_USER_GIFTS_BY_USER_ID, data: result ,giftStates,giftTypes});
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
+        }
+    }
+}
  
+
+function getUserPointFlowListByUserId({userId,pageIndex,pageSize}){
+    return async dispatch => {
+        try {          
+         
+            const result = await customerApi.getCustomerPointFlowListByUserId(userId,  pageIndex, pageSize);
+            const pointReferTypes= customerApi.getPointReferTypes();
+            dispatch({ type: customerConstants.LOAD_USER_POINT_FLOWS_BY_USER_ID, data: result ,pointReferTypes});
+        }
+        catch (error) {
+            dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
+        }
+    }
+}
 
  

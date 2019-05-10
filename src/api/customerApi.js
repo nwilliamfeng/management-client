@@ -62,6 +62,21 @@ class CustomerApi {
         return result;
     }
 
+    async getCustomerGiftListByUserId(userId,  pageIndex, pageSize) {
+        const result = await ApiHelper.post('/customer/getUserGiftsByUserId'
+            , {
+                userId,  pageIndex, pageSize
+            });
+        return result;
+    }
+
+    async getCustomerPointFlowListByUserId(userId,  pageIndex, pageSize) {
+        const result = await ApiHelper.post('/customer/getPointFlowsByUserId'
+            , {
+                userId,  pageIndex, pageSize
+            });
+        return result;
+    }
 
 }
 

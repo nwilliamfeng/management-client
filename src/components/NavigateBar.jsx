@@ -7,7 +7,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTable, faEdit, faUser, faTasks, faMoneyBill, faUserFriends, faCircle } from '@fortawesome/free-solid-svg-icons'
+import { faTable, faEdit, faUser, faTasks, faMoneyBill, faUserFriends, faCircle ,faCalculator} from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
 import { routeUrls } from '../constants'
 import { Link } from 'react-router-dom'
@@ -33,6 +33,7 @@ const categories = {
     TASK_MANAGE: 'taskmanage',
     CARD_PAY_MANAGE: 'cardpaymanage',
     SYS_USER_MANAGE: 'sysusermanage',
+    LIQUIDATION_MANAGE:'Liquidationmanage',
 }
 
 
@@ -89,6 +90,7 @@ class NavigateBar extends React.Component {
         isTaskManageItemOpen: false,
         isCardPayManageItemOpen: false,
         isSystemUserManageItemOpen: false,
+        isLiquidationManageItemOpen:false,
     };
 
 
@@ -103,6 +105,8 @@ class NavigateBar extends React.Component {
     handleCardPayManageItemDropdwon = () => this.setState(state => ({ isCardPayManageItemOpen: !state.isCardPayManageItemOpen }));
 
     handleSystemUserManageItemDropdwon = () => this.setState(state => ({ isSystemUserManageItemOpen: !state.isSystemUserManageItemOpen }));
+
+    handleLiquidationManageItemDropdwon = () => this.setState(state => ({ isLiquidationManageItemOpen: !state.isLiquidationManageItemOpen }));
 
 
 
@@ -125,6 +129,9 @@ class NavigateBar extends React.Component {
         { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_USERGIFT_FREEZING, title: '卡券冻结列表' },
         { category: categories.CARD_PAY_MANAGE, url: routeUrls.GIFT_PAY_APP_LST, title: '卡券支付列表' },
         { category: categories.SYS_USER_MANAGE, url: routeUrls.LOGIN_INFO_DETAIL, title: '权限管理' },
+        { category: categories.LIQUIDATION_MANAGE, url: routeUrls.LIQUIDATION_MONTH_REPORT, title: '月报表' },
+        { category: categories.LIQUIDATION_MANAGE, url: routeUrls.LIQUIDATION_DAY_REPORT, title: '日报表' },
+        { category: categories.LIQUIDATION_MANAGE, url: routeUrls.LIQUIDATION_ERROR_CLEAR_POINT_FLOW, title: '清算异常数据' },
 
     ];
 
@@ -148,6 +155,10 @@ class NavigateBar extends React.Component {
 
                 <ModuleListItem icon={faMoneyBill} title={'卡券支付管理'} isDropdown={this.state.isCardPayManageItemOpen} dropDownHandle={this.handleCardPayManageItemDropdwon}
                     subItems={this.subItems.filter(x => x.category === categories.CARD_PAY_MANAGE)} />
+
+                <ModuleListItem icon={faCalculator} title={'清算'} isDropdown={this.state.isLiquidationManageItemOpen} dropDownHandle={this.handleLiquidationManageItemDropdwon}
+                    subItems={this.subItems.filter(x => x.category === categories.LIQUIDATION_MANAGE)} />
+
 
                 <ModuleListItem icon={faUser} title={'系统用户管理'} isDropdown={this.state.isSystemUserManageItemOpen} dropDownHandle={this.handleSystemUserManageItemDropdwon}
                     subItems={this.subItems.filter(x => x.category === categories.SYS_USER_MANAGE)} />

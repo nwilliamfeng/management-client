@@ -93,4 +93,21 @@ export const routeUrls={
      * 权限管理
      */
     LOGIN_INFO_DETAIL:'/Account/SLoginInfoDetail',
+
+
+    /**
+     * 清算月报表
+     */
+    LIQUIDATION_MONTH_REPORT:'/Liquidation/GetMonthReport',
+
+    /**
+     * 清算日报表
+     */
+    LIQUIDATION_DAY_REPORT:'/Liquidation/GetDayReport',
+
+
+    /**
+     * 获取清算异常数据
+     */
+    LIQUIDATION_ERROR_CLEAR_POINT_FLOW:'/Liquidation/GetErrorClearPointFlow',
 }

@@ -10,6 +10,7 @@ import {  TaskList,TaskTagList } from './tasks'
 import { BrowserRouter as Router,Switch,Route,} from 'react-router-dom'
 import { GiftList } from './gifts';
 import { UserPointFlowList ,UserPointList,UserGiftList } from './customers'
+import { MonthReportList ,DayReportList,ClearPointFlowList} from './liquidation'
 
 const ShellDiv = styled.div`
     display:flex;   
@@ -89,6 +90,9 @@ class Shell extends Component {
                             <Route path={routeUrls.USER_POINT_FLOW_LIST} component={UserPointFlowList} />
                             <Route path={routeUrls.USER_POINT_LIST} component={UserPointList} />
                             <Route path={routeUrls.USER_GIFT_LIST} component={UserGiftList} />
+                            <Route path={routeUrls.LIQUIDATION_MONTH_REPORT} component={MonthReportList} />
+                            <Route path={routeUrls.LIQUIDATION_DAY_REPORT} component={DayReportList} />
+                            <Route path={routeUrls.LIQUIDATION_ERROR_CLEAR_POINT_FLOW} component={ClearPointFlowList} />
                         </Switch>
                     </BodyDiv>
                 </ContainerDiv>

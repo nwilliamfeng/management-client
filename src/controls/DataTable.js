@@ -21,8 +21,8 @@ export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader,
             {renderHeader && renderHeader()}
         </TableHead>
         <TableBody>
-            {renderRow && rows.map(row => renderRow(row))}
-            {rows && rows.length===0 && <TableRow>
+            {renderRow && rows && rows.map(row => renderRow(row))}
+            { ( rows==null || rows.length===0 )&& <TableRow>
                 <TableCell style={{textAlign:'center'}} colSpan={100}> {'没有找到记录'}</TableCell>
                 </TableRow>}
           
@@ -33,7 +33,7 @@ export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader,
                     labelRowsPerPage={'每页行数'}
                     rowsPerPageOptions={[5, 10, 25]}
                     colSpan={3}
-                    count={totalCount?totalCount:rows.length}
+                    count={totalCount?totalCount:rows!=null? rows.length:0}
                     rowsPerPage={pageSize}
                     page={pageIndex}
                     SelectProps={{

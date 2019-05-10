@@ -9,6 +9,7 @@ import { customerActions } from '../../actions'
 import moment from 'moment'
 import { Container, TitleDiv } from '../part'
 import { Search } from '../../controls'
+import {UserPointDetail} from './UserPointDetail'
 
 /**
  * 用户积分列表
@@ -72,7 +73,7 @@ class UserPointList extends Component {
     </div>
 
     onCommit = value => {
-        console.log(value);
+        this.setState({ isOpenDialog: false, currentUserPoint: null });
     }
 
     onPageIndexChange = (event, idx) => {
@@ -114,7 +115,7 @@ class UserPointList extends Component {
                 onClose={() => this.setState({ isOpenDialog: false })}
                 isOpen={isOpenDialog === true}
                 title={'用户详情'} >
-                {/* <Gift gift={currentGift} giftTypes={giftTypes} onCommit={this.onCommit} /> */}
+                <UserPointDetail userPoint={currentUserPoint} onClose={this.onCommit} />
             </CustomDialog>
             <Container title={this.renderTitle()} >
                 <DataTable
