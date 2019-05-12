@@ -38,8 +38,6 @@ export class Task extends Component {
         this.setState({ task: { ...this.state.task, platformID: ptmid, tagId: 0 } });
     }
 
-   // needCreate = () => this.props.location.search === ''; //  console.log(this.props); //this.props.location.search -- ?id=abc
-
     onPropertyChange = e => {
         let task = { ...this.state.task };
         let value = e.target.value;

@@ -14,14 +14,13 @@ export const Total=({from,to,count,page})=><React.Fragment>
     </React.Fragment>
 
 export const DataTable = ({ rows, pageIndex, pageSize, totalCount, renderHeader, renderRow,onPageIndexChange,onPageSizeChange ,needPagination}) => {
-    //const emptyRows = pageSize - Math.min(pageSize, rows.length - pageIndex * pageSize);
-
+    
     return <Table >
         <TableHead>
             {renderHeader && renderHeader()}
         </TableHead>
         <TableBody>
-            {renderRow && rows && rows.map(row => renderRow(row))}
+            {renderRow && rows && rows.map((row ,idx)=> renderRow(row,idx))}
             { ( rows==null || rows.length===0 )&& <TableRow>
                 <TableCell style={{textAlign:'center'}} colSpan={100}> {'没有找到记录'}</TableCell>
                 </TableRow>}

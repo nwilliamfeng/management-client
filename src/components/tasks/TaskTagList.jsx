@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import {  DataTable, ShowDialog, CustomDialog } from '../../controls'
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import {   ShowDialog, CustomDialog,QueryTable } from '../../controls'
 import Button from '@material-ui/core/Button'
 import { taskActions } from '../../actions'
 import { TaskTag } from './TaskTag'
@@ -13,54 +11,26 @@ class TaskTagList extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            rows: [],
+        this.state = {        
             currentTag: null,
             isOpenDialog: false,
         };
     }
 
-    renderHeader = () => <TableRow>
-        <TableCell>支持平台</TableCell>
-        <TableCell>任务标签名称</TableCell>
-        <TableCell>任务标签顺序</TableCell>
-        <TableCell>任务标签描述</TableCell>
-        <TableCell>是否有效</TableCell>
-        <TableCell>添加人员</TableCell>
-        <TableCell>添加时间</TableCell>
-        <TableCell>操作</TableCell>
-    </TableRow>
+    onSearch=()=>this.props.dispatch(taskActions.getTaskTags());
+  
+    columns = [
+        { header: '支持平台', cell: row => this.props.platforms.find(x => x.platformID === row.platformID).name },
+        { header: '任务标签名称', cell: row => row.tagName },
+        { header: '任务标签顺序', cell: row => row.tagSequence },
+        { header: '任务标签描述', cell: row => row.remark },
+        { header: '是否有效', cell: row => row.isEnabled === true ? '是' : '否' },
+        { header: '添加人员', cell: row => row.operator },
+        { header: '添加时间', cell: row => row.createTime },
+        { header: '操作', cell: row => <Button size="small" color="primary" onClick={() => this.setState({ isOpenDialog: true, currentTag: row })}>详情</Button>},    
+    ]
 
-    renderRow = row => <TableRow key={row.id}>
-        <TableCell>{this.state.platforms.find(x => x.platformID === row.platformID).name}</TableCell>
-        <TableCell>{row.tagName}</TableCell>
-        <TableCell>{row.tagSequence}</TableCell>
-        <TableCell>{row.remark}</TableCell>
-        <TableCell>{row.isEnabled === true ? '是' : '否'}</TableCell>
-        <TableCell>{row.operator}</TableCell>
-        <TableCell>{row.createTime}</TableCell>
-        <TableCell>
-            <div style={{ display: 'flex' }}>
-                <Button size="small" color="primary" onClick={() => this.setState({ isOpenDialog: true, currentTag: row })}>详情</Button>
-            </div>
-        </TableCell>
-    </TableRow>
-
-    componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch(taskActions.getTaskTags());
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps != null) {
-            const { platforms, taskTags, alertMessage, } = nextProps;
-            this.setState({ platforms, alertMessage, rows: taskTags });
-        }
-    }
-
-    openNewDialog = () => {
-        this.setState({ isOpenDialog: true, currentTag: this.createNewTag() });
-    }
+    openNewDialog = () =>  this.setState({ isOpenDialog: true, currentTag: this.createNewTag() });
 
     renderTitle = () => <TitleDiv>
         <div>{'任务标签列表'}</div>
@@ -77,7 +47,8 @@ class TaskTagList extends Component {
     }
 
     render() {
-        const { rows, currentTag, isOpenDialog } = this.state;
+        const {  currentTag, isOpenDialog } = this.state;
+        const {taskTags,totalCount} =this.props;
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
             <CustomDialog
@@ -87,19 +58,13 @@ class TaskTagList extends Component {
                 <TaskTag tag={currentTag} onCommit={this.onCommit} />
             </CustomDialog>
             <Container title={this.renderTitle()} >
-                <DataTable
-                    rows={rows}
-                    renderHeader={this.renderHeader}
-                    renderRow={this.renderRow}>
-                </DataTable>
+                <QueryTable  columns={this.columns} rows={taskTags} totalCount={ totalCount} onSearch={this.onSearch}/>      
             </Container>
         </React.Fragment>
     }
 }
 
-const mapStateToProps = (state) => {
-    return { ...state.location, ...state.task };
-}
+const mapStateToProps = (state) =>{ return {  ...state.task }};
 
 const instance = withRouter(connect(mapStateToProps)(TaskTagList));
 

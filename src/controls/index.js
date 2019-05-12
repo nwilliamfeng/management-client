@@ -12,3 +12,4 @@ export * from './Dialog'
 export * from './CustomDialog'
 
 export * from './Search'
+export * from './QueryTable'

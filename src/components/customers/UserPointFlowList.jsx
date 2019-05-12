@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { DataTable, ShowDialog, CustomDialog } from '../../controls'
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import { QueryTable, ShowDialog, CustomDialog } from '../../controls'
 import Button from '@material-ui/core/Button'
 import { customerActions } from '../../actions'
 import moment from 'moment'
@@ -33,39 +31,21 @@ class UserPointFlowList extends Component {
         };
     }
 
-    executeSearch = () => this.props.dispatch(customerActions.getUserPointFlowsFromDayReport({ ...this.state.searchCondition }))
-
-    renderTableHeader = () => <TableRow>
-        <TableCell>通行证ID</TableCell>
-        <TableCell>用户名称</TableCell>
-        <TableCell>变动方向</TableCell>
-        <TableCell>变动类型</TableCell>
-        <TableCell>关联任务或关联卡券</TableCell>
-        <TableCell>变动时间</TableCell>
-        <TableCell>创建时间</TableCell>
-        <TableCell>变动积分值</TableCell>
-        <TableCell>操作</TableCell>
-    </TableRow>
-
-    renderTableRow = row => <TableRow key={row.userId}>
-        <TableCell>{row.userId}</TableCell>
-        <TableCell>{row.userNickName}</TableCell>
-        <TableCell>{row.flowType === '1' ? '流入' : '流出'}</TableCell>
-        <TableCell>{this.state.pointReferTypes && <div> {this.state.pointReferTypes.find(x => x.value === row.referType).name}</div>} </TableCell>
-        <TableCell>{row.referID}</TableCell>
-        <TableCell>{row.flowTime}</TableCell>
-        <TableCell>{row.createTime}</TableCell>
-        <TableCell>{row.flowValue}</TableCell>
-        <TableCell>
-            <div style={{ display: 'flex' }}>
-                <Button size="small" color="primary" onClick={() => this.setState({ isOpenDialog: true, currentUserPoint: row })}>详情</Button>
-            </div>
-        </TableCell>
-    </TableRow>
+    columns = [
+        { header: '通行证ID', cell: row => row.userId },
+        { header: '用户名称', cell: row => row.userNickName },
+        { header: '变动方向', cell: row => row.flowType === '1' ? '流入' : '流出' },
+        { header: '变动类型', cell: row => <div> {this.props.pointReferTypes.find(x => x.value === row.referType).name}</div> },
+        { header: '关联任务或关联卡券', cell: row => row.referID },
+        { header: '变动时间', cell: row => row.flowTime },
+        { header: '创建时间', cell: row => row.createTime },
+        { header: '变动积分值', cell: row => row.flowValue },
+        { header: '操作', cell: row => <Button size="small" color="primary" onClick={() => this.setState({ isOpenDialog: true, currentUserPoint: row })}>详情</Button> },
+    ]
 
     renderSearch = () => {
         const items = [
-            { name: '通行证ID', onKeyDown: () => this.executeSearch(), onChange: e => this.setState({ searchCondition: { ...this.state.searchCondition, userId: e.target.value } }) },
+            { name: '通行证ID', onKeyDown: () => this.onSearch(), onChange: e => this.setState({ searchCondition: { ...this.state.searchCondition, userId: e.target.value } }) },
         ]
         return <Search items={items} />
     }
@@ -74,7 +54,7 @@ class UserPointFlowList extends Component {
         <TitleDiv >
             <div>{'用户积分变动'}</div>
             <div style={{ display: 'flex' }}>
-                <Button color="primary" onClick={() => this.executeSearch()}>查询</Button>
+                <Button color="primary" onClick={() => this.onSearch()}>查询</Button>
             </div>
         </TitleDiv>
         {this.renderSearch()}
@@ -84,39 +64,19 @@ class UserPointFlowList extends Component {
         console.log(value);
     }
 
-
-
-    onPageIndexChange = (event, idx) => {
-        const { searchCondition } = this.state;
-        if (searchCondition.pageIndex !== idx + 1) {
-            searchCondition.pageIndex = idx + 1;
-            this.setState({ searchCondition });
-            this.executeSearch();
+    onSearch = value => {
+        if (value != null) {
+            this.setState({ searchCondition: value });
         }
-    };
-
-    onPageSizeChange = event => {
-        const { searchCondition } = this.state;
-        searchCondition.pageIndex = 1;
-        searchCondition.pageSize = event.target.value;
-        this.setState({ searchCondition })
-        this.executeSearch();
-    };
-
-    componentDidMount() {
-        this.executeSearch();
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps != null) {
-            const { alertMessage, totalCount, userPointFlows, pointReferTypes } = nextProps;
-            this.setState({ alertMessage, totalCount, rows: userPointFlows, pointReferTypes });
+        else{
+            value =this.state.searchCondition;
         }
+        this.props.dispatch(customerActions.getUserPointFlowsFromDayReport({ ...value }))
     }
 
     render() {
-        const { rows, searchCondition, totalCount, currentUserPointFlow, isOpenDialog } = this.state;
-        const { pageSize, pageIndex } = searchCondition;
+        const { searchCondition, currentUserPointFlow, isOpenDialog } = this.state;
+        const { userPointFlows, totalCount } = this.props;
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
             <CustomDialog
@@ -126,17 +86,7 @@ class UserPointFlowList extends Component {
                 {/* <Gift gift={currentGift} giftTypes={giftTypes} onCommit={this.onCommit} /> */}
             </CustomDialog>
             <Container title={this.renderTitle()} >
-                <DataTable
-                    rows={rows}
-                    pageSize={pageSize}
-                    pageIndex={pageIndex - 1}
-                    totalCount={totalCount}
-                    onPageIndexChange={this.onPageIndexChange}
-                    onPageSizeChange={this.onPageSizeChange}
-                    renderHeader={this.renderTableHeader}
-                    renderRow={this.renderTableRow}
-                    needPagination={true}>
-                </DataTable>
+                <QueryTable columns={this.columns} rows={userPointFlows} onSearch={this.onSearch} totalCount={totalCount} searchCondition={searchCondition} />
             </Container>
         </React.Fragment>
     }

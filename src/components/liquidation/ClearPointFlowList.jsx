@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { DataTable, ShowDialog, CustomDialog } from '../../controls'
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import { QueryTable, ShowDialog, Search, SearchType } from '../../controls'
 import Button from '@material-ui/core/Button'
 import { liquidationActions } from '../../actions'
 import moment from 'moment'
 import { Container, TitleDiv } from '../part'
-import { Search, SearchType } from '../../controls'
 
 /**
  * 清算异常数据
@@ -18,10 +15,6 @@ class ClearPointFlowList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isOpenDialog: false,
-
-            totalCount: 0,
-
             searchCondition: {
                 platformid: -1,
                 pageIndex: 1,
@@ -31,32 +24,26 @@ class ClearPointFlowList extends Component {
         };
     }
 
-    executeSearch = () => this.props.dispatch(liquidationActions.getErrorClearPointFlow({ ...this.state.searchCondition }))
+    onSearch = value => {
+        if (value != null) {
+            this.setState({ searchCondition: value });
+        }
+        else {
+            value = this.state.searchCondition;
+        }
+        this.props.dispatch(liquidationActions.getErrorClearPointFlow({ ...value }));
+    }
 
-    renderTableHeader = () => <TableRow>
-        <TableCell>时间</TableCell>
-        <TableCell>类别</TableCell>
-        <TableCell>积分流向</TableCell>
-        <TableCell>积分值</TableCell>
-        <TableCell>用户编号</TableCell>
-        <TableCell>流水号</TableCell>
-        <TableCell>清算状态</TableCell>
-        <TableCell>清算信息</TableCell>
-    </TableRow>
-
-
-
-    renderTableRow = row => <TableRow key={row.flowid}>
-        <TableCell>{row.updateTime}</TableCell>
-        <TableCell>{this.props.referTypes.find(x => x.value === row.referType).name}</TableCell>
-        <TableCell>{row.flowType==='1'?'流入':row.flowType==='2'?'流出':'流入，流出'} </TableCell>
-        <TableCell> {row.flowvalue} </TableCell>
-        <TableCell>{row.userid}</TableCell>
-        <TableCell>{row.flowid}</TableCell>
-        <TableCell>{row.clearCode}</TableCell>
-        <TableCell>{row.clearMessage}</TableCell>   
-
-    </TableRow>
+    columns = [
+        { header: '时间', cell: row => row.updateTime },
+        { header: '类别', cell: row => this.props.referTypes.find(x => x.value === row.referType).name },      
+        { header: '积分流向', cell: row => row.flowType === '1' ? '流入' : row.flowType === '2' ? '流出' : '流入，流出' },
+        { header: '积分值', cell: row => row.flowvalue },
+        { header: '用户编号', cell: row => <b> {row.userid}</b> },
+        { header: '流水号', cell: row => <b> {row.flowid}</b> },
+        { header: '清算状态', cell: row => row.clearCode },
+        { header: '清算信息', cell: row => row.clearMessage },
+    ]
 
     renderSearch = () => {
         const items = [
@@ -78,7 +65,7 @@ class ClearPointFlowList extends Component {
         <TitleDiv>
             <div>{'清算异常数据'}</div>
             <div style={{ display: 'flex' }}>
-                <Button color="primary" onClick={() => this.executeSearch()}>查询</Button>
+                <Button color="primary" onClick={() => this.onSearch()}>查询</Button>
             </div>
         </TitleDiv>
         {this.renderSearch()}
@@ -88,52 +75,13 @@ class ClearPointFlowList extends Component {
         console.log(value);
     }
 
-
-
-    onPageIndexChange = (event, idx) => {
-        const { searchCondition } = this.state;
-        if (searchCondition.pageIndex !== idx + 1) {
-            searchCondition.pageIndex = idx + 1;
-            this.setState({ searchCondition });
-            this.executeSearch();
-        }
-    };
-
-    onPageSizeChange = event => {
-        const { searchCondition } = this.state;
-        searchCondition.pageIndex = 1;
-        searchCondition.pageSize = event.target.value;
-        this.setState({ searchCondition })
-        this.executeSearch();
-    };
-
-    componentDidMount() {
-        this.executeSearch();
-    }
-
     render() {
-        const { clearPointFlows, totalCount, isOpenDialog, } = this.props;
+        const { clearPointFlows, totalCount, } = this.props;
         const { searchCondition } = this.state;
-        const { pageSize, pageIndex } = searchCondition;
         return <React.Fragment>
             <ShowDialog alertMessage={this.props.alertMessage} />
-            {/* <CustomDialog
-                onClose={() => this.setState({ isOpenDialog: false })}
-                isOpen={isOpenDialog === true}
-                title={'用户详情'} >           
-            </CustomDialog> */}
             <Container title={this.renderTitle()} >
-                <DataTable
-                    rows={clearPointFlows}
-                    pageSize={pageSize}
-                    pageIndex={pageIndex - 1}
-                    totalCount={totalCount}
-                    onPageIndexChange={this.onPageIndexChange}
-                    onPageSizeChange={this.onPageSizeChange}
-                    renderHeader={this.renderTableHeader}
-                    renderRow={this.renderTableRow}
-                    needPagination={true}>
-                </DataTable>
+                <QueryTable columns={this.columns} rows={clearPointFlows} onSearch={this.onSearch} totalCount={totalCount} searchCondition={searchCondition} />
             </Container>
         </React.Fragment>
     }

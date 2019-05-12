@@ -12,7 +12,7 @@ export const taskActions = {
     addOrUpateTaskTag,
 }
 
-function getTasks(platformId, startTime, endTime, pageIndex = 1, pageSize = 10) {
+function getTasks({platformId, startTime, endTime, pageIndex, pageSize}) {
     return async dispatch => {
         try {
             const platforms = await taskApi.getPlatforms();
@@ -38,21 +38,6 @@ function getTaskTags() {
         }
     }
 }
-
-
-
-// function getTaskInLocal(taskId) {
-//     return async dispatch => {
-//         try {
-//             const platforms = await taskApi.getPlatforms();
-//             const taskTags = await taskApi.getTaskTags();
-//             dispatch({ type: taskConstants.LOAD_TASK_IN_LOCAL, taskId, platforms, taskTags });
-//         }
-//         catch (error) {
-//             dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(error.message) })
-//         }
-//     }
-// }
 
 
 function addOrUpateTask(task, { platformId, startTime, endTime, pageIndex, pageSize }) {

@@ -44,18 +44,18 @@ export const routeUrls={
     /**
      * 用户列表
      */
-    USER_POINT_LIST:'/User/SUserListT',
+    USER_POINT_LIST:'/User/UserPointList',
 
 
     /**
      * 用户积分变动
      */
-    USER_POINT_FLOW_LIST:'/User/SUserPointFlowT',
+    USER_POINT_FLOW_LIST:'/User/UserPointFlowList',
 
     /**
      * 用户卡券列表
      */
-    USER_GIFT_LIST:'/User/SUserGiftList',
+    USER_GIFT_LIST:'/User/UserGiftList',
 
     /**
      * 任务列表
