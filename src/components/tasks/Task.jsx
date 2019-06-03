@@ -9,11 +9,11 @@ import { GridSwitch, GridDatePickerField, GridTextField, GridSelectField, GridRo
  * 验证模板
  */
 const validationSchema = Yup.object().shape({
-    platformID: Yup.string().required('平台类型不能为空。'),
-    tagId: Yup.number().notOneOf([0], '请选择任务标签。'),
-    name: Yup.string().required('任务名称不能为空。'),
-    taskSort: Yup.number().notOneOf([0], '请输入任务序号。'),
-    taskExpireDays: Yup.number().notOneOf([0], '请输入领取任务有效天数。'),
+    // platformID: Yup.string().required('平台类型不能为空。'),
+    // tagId: Yup.number().notOneOf([0], '请选择任务标签。'),
+    // name: Yup.string().required('任务名称不能为空。'),
+    // taskSort: Yup.number().notOneOf([0], '请输入任务序号。'),
+    // taskExpireDays: Yup.number().notOneOf([0], '请输入领取任务有效天数。'),
 })
 
 const fieldStyles = {firstColumn: { width: 200 },}

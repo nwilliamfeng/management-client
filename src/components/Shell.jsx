@@ -11,6 +11,10 @@ import { BrowserRouter as Router,Switch,Route,} from 'react-router-dom'
 import { GiftList } from './gifts';
 import { UserPointFlowList ,UserPointList,UserGiftList } from './customers'
 import { MonthReportList ,DayReportList,ClearPointFlowList} from './liquidation'
+import Cookies from 'universal-cookie';
+ 
+
+const cookies = new Cookies();
 
 const ShellDiv = styled.div`
     display:flex;   
@@ -62,6 +66,16 @@ const ContainerDiv = styled.div`
 
 class Shell extends Component {
 
+    constructor(props){
+        super(props);
+
+        if(cookies.get("token")==null){
+            let expires =new Date();
+             expires.setSeconds(expires.getSeconds()+120 );
+            cookies.set("token",'abc',{path:'/', expires});
+        }
+       
+    }
 
     // shouldComponentUpdate(nextProps, nextState, nextContext) {
     //     return false;
