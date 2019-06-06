@@ -12,14 +12,14 @@ export const authActions = {
 function login(userId, password) {
     return async dispatch => {
         try {
-            dispatch({ type: authConstants.LOGGING_IN });
+          
             const result = await authApi.login(userId, password);
             const { statusCode, data, message } = result;
             if (statusCode !== 1) {
                 dispatch({ type: dialogConstants.SHOW_ERROR_ATTACH, errorMessage: buildMessage(message) });
             }
             else {
-                dispatch({ type: authConstants.LOGGED_IN, info: data });
+                dispatch({ type: authConstants.LOGIN, info: data });
             }
         }
         catch (error) {

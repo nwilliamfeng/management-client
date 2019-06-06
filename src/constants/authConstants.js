@@ -1,10 +1,9 @@
 export const authConstants={
     
-    LOGGING_IN:'LOGGING_IN',
+    LOGIN:'LOGIN',
 
-    LOGGED_IN:'LOGGED_IN',
+    LOGOUT:'LOGOUT',
 
-    LOGGED_OUT:'LOGGED_OUT',
-
+  
 
 }

@@ -13,7 +13,7 @@ import {appContext} from '../../helper';
 
 export const LoginRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={props => (
-        appContext.currentStaff
+        appContext.getLoginInfo()!=null
             ? <Component {...props} />
             : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
     )} />
