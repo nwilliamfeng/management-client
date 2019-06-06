@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import {appContext} from '../../util';
+import {appContext} from '../../helper';
 
 //此方法属于包装组合模式
 // export const LoginRoute = ({ component: Component, ...rest }) => (

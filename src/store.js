@@ -1,4 +1,4 @@
-import {taskReducer,pointReducer ,customerReducer,giftReducer,customerDetailReducer,liquidationReducer} from './reducers';
+import {taskReducer,pointReducer ,customerReducer,giftReducer,customerDetailReducer,liquidationReducer,authReducer} from './reducers';
 import thunkMiddleware from 'redux-thunk'; 
 import {combineReducers,createStore,applyMiddleware} from 'redux';
 
@@ -9,6 +9,7 @@ const reducer= combineReducers({
     customer:customerReducer,
     customerDetail:customerDetailReducer,
     liquidation:liquidationReducer,
+    auth:authReducer,
 })
  
 

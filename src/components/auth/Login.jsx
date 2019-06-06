@@ -1,72 +1,56 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { authActions } from '../actions';
-//import Modal from 'react-modal';
-import { appSettings } from '../../util';
-import { loginStates } from '../constants';
+import { authActions } from '../../actions';
 
 
-class LoginPage extends Component {
+class Login extends Component {
 
     constructor(props) {
-        super(props);
-        const appKey = appSettings.appKey;
-        this.state = { userName: '', userPassword: '', submitted: false, appKey, oldAppKey: appKey }; //初始化登录状态
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.clearError = this.clearError.bind(this);
+        super(props);    
+        this.state = { userName: '', userPassword: '', submitted: false,   }; //初始化登录状态            
     }
 
 
-    handleSubmit(event) {
+    handleSubmit=event =>{
         event.preventDefault();//禁止网页跳转
         this.setState({ submitted: true });//设置已经执行提交操作
-        const { userName, userPassword, appKey } = this.state;
+        const { userName, userPassword } = this.state;
         const { dispatch } = this.props;
 
         //在用户名和密码输入后执行
         if (userName && userPassword) {
-            dispatch(authActions.login(userName, userPassword, appKey));
+            dispatch(authActions.login(userName, userPassword));
         }
 
     }
 
-    handleInputChange(event) {
+    handleInputChange=event=> {
         const { name, value } = event.target;
         this.setState({ [name]: value }); //设置对应的属性
     }
 
     //清除错误信息
-    clearError() {
+    clearError=()=> {
         const { dispatch } = this.props;
         dispatch(authActions.clearError());
     }
 
     render() {
         const { loggingIn, error } = this.props; //传入的状态值
-       
-        const isErrorAppkey =error? error.includes('appKey'):false;
-        const { userName, userPassword, appKey, oldAppKey, submitted } = this.state;//自己持有的状态值
+      
+        const { userName, userPassword,  submitted } = this.state;//自己持有的状态值
         return (
             <div >
                 <div className='jumbotron row'>
                     <div className="col-sm-8 col-sm-offset-2">
-                        {/*错误信息提示框，如果error不为空则显示,alert样式参考https://getbootstrap.com/docs/3.3/javascript/#alerts*/}
+                   
                         {error != null && error !== '' && <div className="alert alert-danger alert-dismissible fade in col-md-8 col-md-offset-2" role="alert">
                             <button type="button" className="close" onClick={this.clearError} data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
                             <strong>登录失败</strong> 原因：{error}
                         </div>}
                         <div className="col-md-6 col-md-offset-3">
-                            {/* <Modal 
-                        isOpen={error != null && error != ''}
-                        style={customStyles}
-                        contentLabel="Example Modal">
-
-                        <h2 ref={subtitle => this.subtitle = subtitle}>Hello</h2>
-                        <button onClick={this.clearError}>close</button>
-
-                    </Modal> */}
-                            <h2>欢迎使用在线客服系统，请登录</h2>
+                         
+                            <h2>欢迎使用，请登录</h2>
                             <p></p>
                             <form name="form" onSubmit={this.handleSubmit}>
                                 <div className={'form-group' + (submitted && !userName ? ' has-error' : '')}>
@@ -83,15 +67,7 @@ class LoginPage extends Component {
                                         <div className="help-block">请输入密码</div>
                                     }
                                 </div>
-                                {(isErrorAppkey||!oldAppKey) && <div className={'form-group' + (submitted && !appKey ? ' has-error' : '')}>
-                                    <label htmlFor="appKey">AppKey</label>
-                                    <input type="text" className="form-control" name="appKey" value={appKey} onChange={this.handleInputChange} />
-                                    {submitted && !appKey  &&
-                                        <div className="help-block">请输入AppKey</div>
-                                    }
-                               
-                                </div>
-                                }
+                                
                                 <div className="form-group">
                                     <button className="btn btn-primary">登录</button>
                                     {loggingIn &&
@@ -106,10 +82,10 @@ class LoginPage extends Component {
                     </div>
                 </div>
 
-                <div className="row text-center">
+                {/* <div className="row text-center">
                     <p> <a >在线客服</a></p>
                     <p> <a >company.com</a></p>
-                </div>
+                </div> */}
             </div>
         );
     }
@@ -120,15 +96,16 @@ function mapStateToProps(state) {
 
     const { loginState,error } = state.auth;
     return {
-        loggingIn:   loginState==loginStates.LOGGING_IN,
+        loggingIn:loginState==loginStates.LOGGING_IN,
         error: error,
 
     };
 }
 
 
-const page = connect(mapStateToProps, null)(LoginPage);
+const page = connect(mapStateToProps, null)(Login);
+
 /**
- * LoginPage实例
+ * Login实例
  */
-export { page as LoginPage }; 
+export { page as Login }; 
