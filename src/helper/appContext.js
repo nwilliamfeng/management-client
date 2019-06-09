@@ -12,10 +12,8 @@ class AppContext {
         const userId =cookies.get('userId');
         const accessToken =cookies.get('accessToken');
         if(userName==null || userId==null || accessToken==null){
-            console.log('faile');
             return null;       
         }
-     console.log(accessToken+'dddd');
         return {userName,userId,accessToken};
     }
 

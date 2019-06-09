@@ -69,6 +69,7 @@ class Shell extends Component {
     // }
 
     render() {
+      
         return <Router>
             <ShellDiv>
                 <LeftDiv>

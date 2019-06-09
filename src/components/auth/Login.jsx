@@ -1,20 +1,70 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { authActions } from '../../actions';
-import {loginStates} from '../../constants'
 
+import styled from 'styled-components'
+
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Lock from '@material-ui/icons/Lock';
+import ErrorIcon from '@material-ui/icons/Error';
+import SnackbarContent from '@material-ui/core/SnackbarContent';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+
+
+const Div = styled.div`
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-between;
+    
+`
+
+const DialogDiv = styled.div`
+    border-radius:3px;
+    margin-top:50px;
+    border:1px solid #eaeced;
+    padding:40px 60px;
+    display:flex;
+    flex-direction:column;
+`
+
+const FootContentDiv = styled.div`
+    padding:0px 10px; 
+    color:gray;
+    font-size:12px;
+`
+
+const FooterDiv = styled.div`
+    width:100%;
+    height:40px;
+    background:#F7F9FA;
+    padding:10px 0px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+`
 
 class Login extends Component {
 
     constructor(props) {
-        super(props);    
-        this.state = { userName: '', userPassword: '', submitted: false,   }; //初始化登录状态            
+        super(props);
+        this.state = { userName: '', userPassword: '', loggingIn: false, alertMessage:null }; //初始化登录状态    
+
     }
 
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({ loggingIn: false,alertMessage:nextProps.alertMessage });
+    }
 
-    handleSubmit=event =>{
+    onLogin = event => {
         event.preventDefault();//禁止网页跳转
-        this.setState({ submitted: true });//设置已经执行提交操作
+        this.setState({ loggingIn: true,alertMessage:null });//设置已经执行提交操作
         const { userName, userPassword } = this.state;
         const { dispatch } = this.props;
 
@@ -25,69 +75,72 @@ class Login extends Component {
 
     }
 
-    handleInputChange=event=> {
+    handleInputChange = event => {
         const { name, value } = event.target;
         this.setState({ [name]: value }); //设置对应的属性
     }
 
-    //清除错误信息
-    clearError=()=> {
-        const { dispatch } = this.props;
-        dispatch(authActions.clearError());
-    }
+
+    isUserNameValid=()=>this.state.userName!=null && this.state.userName!=='';
+
+    isUserPasswordValid=()=>this.state.userPassword!=null && this.state.userPassword!=='';
 
     render() {
-        const { loggingIn, error } = this.props; //传入的状态值
-      
-        const { userName, userPassword,  submitted } = this.state;//自己持有的状态值
+   
+        const { loggingIn ,alertMessage} = this.state;//自己持有的状态值
         return (
-            <div >
-                <div className='jumbotron row'>
-                    <div className="col-sm-8 col-sm-offset-2">
-                   
-                        {error != null && error !== '' && <div className="alert alert-danger alert-dismissible fade in col-md-8 col-md-offset-2" role="alert">
-                            <button type="button" className="close" onClick={this.clearError} data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            <strong>登录失败</strong> 原因：{error}
-                        </div>}
-                        <div className="col-md-6 col-md-offset-3">
-                         
-                            <h2>欢迎使用，请登录</h2>
-                            <p></p>
-                            <form name="form" onSubmit={this.handleSubmit}>
-                                <div className={'form-group' + (submitted && !userName ? ' has-error' : '')}>
-                                    <label htmlFor="userName">用户名</label>
-                                    <input type="text" className="form-control" name="userName" value={userName} onChange={this.handleInputChange} />
-                                    {submitted && !userName &&
-                                        <div className="help-block">请输入用户名</div>
-                                    }
-                                </div>
-                                <div className={'form-group' + (submitted && !userPassword ? ' has-error' : '')}>
-                                    <label htmlFor="userPassword">登录密码</label>
-                                    <input type="password" className="form-control" name="userPassword" value={userPassword} onChange={this.handleInputChange} />
-                                    {submitted && !userPassword &&
-                                        <div className="help-block">请输入密码</div>
-                                    }
-                                </div>
-                                
-                                <div className="form-group">
-                                    <button className="btn btn-primary">登录</button>
-                                    {loggingIn &&
-                                        <img alt='' src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-                                    }
+            <Div>
+                <DialogDiv>
 
-                                </div>
-                            </form>
+                    <div style={{ color: 'gray', fontSize: 28, paddingBottom: 20 }}>积分卡券管理系统</div>
+                    {alertMessage != null && <SnackbarContent
+                        style={{ marginBottom: 20, background: 'red' }}
+                        className='error'
+                        aria-describedby="client-snackbar"
+                        message={
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <ErrorIcon style={{ marginRight: 10 }} />
+                                <div style={{ maxWidth: 290, wordBreak: 'break-all' }}>{alertMessage.content} </div>
+                            </div>
+                        }
+                    />}
+                    <Grid container spacing={1} alignItems="flex-end">
+                        <Grid item >
+                            <AccountCircle style={{ color: '#0070ba', fontSize: 32 }} />
+                        </Grid>
+                        <Grid item>
+                            <TextField name="userName" label="用户名" error={!this.isUserNameValid()} 
+                            helperText={!this.isUserNameValid()?'请输入用户名':''}
+                            style={{ width: 300 }} onChange={this.handleInputChange} />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={1} alignItems="flex-end" style={{ marginTop: 20, marginBottom: 40 }}>
+                        <Grid item >
+                            <Lock style={{ color: '#0070ba', fontSize: 32 }} />
+                        </Grid>
+                        <Grid item>
+                            <TextField type="password" label="登录密码" 
+                             error={!this.isUserPasswordValid()} name="userPassword" 
+                             helperText={!this.isUserPasswordValid()?'请输入登录密码':''}
+                             style={{ width: 300 }} onChange={this.handleInputChange} />
+                        </Grid>
+                    </Grid>
 
-                        </div>
+                    <div style={{display:'flex'}}>
+                        {loggingIn === true && <CircularProgress />}
+                        <Button variant="contained" disabled={loggingIn === true || !this.isUserNameValid() || !this.isUserPasswordValid()} color="primary" style={{ width: 320 }} onClick={this.onLogin}> 登录</Button>
 
                     </div>
-                </div>
 
-                {/* <div className="row text-center">
-                    <p> <a >在线客服</a></p>
-                    <p> <a >company.com</a></p>
-                </div> */}
-            </div>
+                </DialogDiv>
+
+                <FooterDiv>
+                    <FootContentDiv > {'基于 React + Redux 构建'}</FootContentDiv>
+                    <FootContentDiv > {'版权所有© 2019'}</FootContentDiv>
+                </FooterDiv>
+
+            </Div>
+
         );
     }
 }
@@ -95,11 +148,10 @@ class Login extends Component {
 
 function mapStateToProps(state) {
 
-    const { loginState,error } = state.auth;
+    const { alertMessage } = state.auth;
     return {
-        loggingIn:loginState==loginStates.LOGGING_IN,
-        error: error,
 
+        alertMessage,
     };
 }
 

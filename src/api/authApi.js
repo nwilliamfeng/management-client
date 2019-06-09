@@ -12,7 +12,7 @@ class AuthApi {
  
 
     async login(userId,password) {
-        return await ApiHelper.postByForm('/auth/login',{userId,password});
+        return await ApiHelper.post('/auth/login',{userId,password});
     }
 
     
