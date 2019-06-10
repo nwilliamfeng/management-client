@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import MyAppBar from './AppBar'
+import {MyAppBar} from './AppBar'
 import { connect } from 'react-redux'
 import { TitleBar } from './TitleBar'
 import { UserPanel } from './UserPanel'
@@ -11,7 +11,7 @@ import { BrowserRouter as Router,Switch,Route,} from 'react-router-dom'
 import { GiftList } from './gifts';
 import { UserPointFlowList ,UserPointList,UserGiftList } from './customers'
 import { MonthReportList ,DayReportList,ClearPointFlowList} from './liquidation'
-
+import { ShowDialog} from '../controls'
 
 const ShellDiv = styled.div`
     display:flex;   
@@ -69,14 +69,15 @@ class Shell extends Component {
     // }
 
     render() {
-      
+        const {auth} =this.props;
+        const {loginInfo,alertMessage} =auth;
         return <Router>
             <ShellDiv>
                 <LeftDiv>
                     <TitleDiv>
                         <TitleBar />
                     </TitleDiv>
-                    <UserPanel />
+                    <UserPanel userName={loginInfo==null?null:loginInfo.userName}/>
                     <NavigateDiv className='scollContainer'>
                         <NavigateBar />
                     </NavigateDiv>
@@ -98,7 +99,7 @@ class Shell extends Component {
                         </Switch>
                     </BodyDiv>
                 </ContainerDiv>
-
+                <ShowDialog alertMessage={alertMessage} />
             </ShellDiv>
         </Router>
     }

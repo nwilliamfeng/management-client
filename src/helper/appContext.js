@@ -17,6 +17,12 @@ class AppContext {
         return {userName,userId,accessToken};
     }
 
+    clearLoginInfo(){
+        cookies.remove('userName');
+        cookies.remove('accessToken');
+        cookies.remove('userId');
+    }
+
     saveLoginInfo(loginInfo) {
         const { userName, userId, accessToken } = loginInfo;
         this._saveItem('userName',userName);

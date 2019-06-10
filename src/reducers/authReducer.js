@@ -1,14 +1,14 @@
-import { authConstants ,loginStates, dialogConstants } from '../constants'
+import { authConstants , dialogConstants } from '../constants'
+import {appContext} from '../helper'
 
-
-const initValue = {   loginInfo:null, alertMessage: null ,loginState:loginStates.LOGGED_OUT  }
+const initValue = {   loginInfo:appContext.getLoginInfo(), alertMessage: null   }
 
 export const authReducer = (state = initValue, action) => {
     switch (action.type) {
         
      
         case authConstants.LOGIN:
-            return { ...state,  alertMessage: null, loginInfo:action.loginInfo,loginState:loginStates.LOGGED_IN  };
+            return { ...state,  alertMessage: null, loginInfo:action.loginInfo };
 
        
         case dialogConstants.SHOW_ERROR_ATTACH:

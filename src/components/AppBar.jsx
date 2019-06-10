@@ -1,21 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-//import Typography from '@material-ui/core/Typography';
-//import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
-//import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import { connect } from 'react-redux';
+import { authActions } from '../actions';
 
 const styles = theme => ({
   root: {
@@ -94,27 +90,32 @@ class MyAppBar extends React.Component {
   };
 
   handleProfileMenuOpen = event => {
-    this.setState({ anchorEl: event.currentTarget });
+     this.setState({ anchorEl: event.currentTarget });
   };
 
   handleMenuClose = () => {
-    this.setState({ anchorEl: null });
-    this.handleMobileMenuClose();
+     this.setState({ anchorEl: null });
+   //  this.handleMobileMenuClose();
   };
+
+  handleLogoutClick=()=>{
+    this.setState({ anchorEl: null });
+    const {userName,accessToken} =this.props.loginInfo;
+    this.props.dispatch(authActions.logout(userName,accessToken));
+  }
 
   handleMobileMenuOpen = event => {
     this.setState({ mobileMoreAnchorEl: event.currentTarget });
   };
 
-  handleMobileMenuClose = () => {
-    this.setState({ mobileMoreAnchorEl: null });
-  };
+  handleMobileMenuClose = () => this.setState({ mobileMoreAnchorEl: null });
+
 
   render() {
-    const { anchorEl, mobileMoreAnchorEl } = this.state;
+    const { anchorEl } = this.state;
     const { classes } = this.props;
     const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+   
 
     const renderMenu = (
       <Menu
@@ -125,42 +126,11 @@ class MyAppBar extends React.Component {
         onClose={this.handleMenuClose}
       >
         <MenuItem onClick={this.handleMenuClose}>修改信息</MenuItem>
-        <MenuItem onClick={this.handleMenuClose}>退出</MenuItem>
+        <MenuItem onClick={this.handleLogoutClick}>退出</MenuItem>
       </Menu>
     );
 
-    const renderMobileMenu = (
-      <Menu
-        anchorEl={mobileMoreAnchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={isMobileMenuOpen}
-        onClose={this.handleMenuClose}
-      >
-        <MenuItem onClick={this.handleMobileMenuClose}>
-          <IconButton color="inherit">
-            <Badge badgeContent={4}  >
-              <MailIcon />
-            </Badge>
-          </IconButton>
-          {/* <p>Messages</p> */}
-        </MenuItem>
-        <MenuItem onClick={this.handleMobileMenuClose}>
-          <IconButton color="inherit">
-            <Badge badgeContent={11} color="primary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <p>通知</p>
-        </MenuItem>
-        <MenuItem onClick={this.handleProfileMenuOpen}>
-          <IconButton color="inherit">
-            <AccountCircle />
-          </IconButton>
-          <p>修改信息</p>
-        </MenuItem>
-      </Menu>
-    );
+  
 
     return (
       <div className={classes.root}>
@@ -169,21 +139,7 @@ class MyAppBar extends React.Component {
             <IconButton className={classes.menuButton}  aria-label="Open drawer">
               <MenuIcon />
             </IconButton>
-            {/* <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-              Material-UI
-            </Typography> */}
-            {/* <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-              />
-            </div> */}
+       
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               <IconButton >
@@ -191,11 +147,7 @@ class MyAppBar extends React.Component {
                   <MailIcon />
                 </Badge>
               </IconButton>
-              {/* <IconButton color="inherit">
-                <Badge badgeContent={17} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton> */}
+             
               <IconButton
                 aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                 aria-haspopup="true"
@@ -205,22 +157,27 @@ class MyAppBar extends React.Component {
                 <AccountCircle />
               </IconButton>
             </div>
-            <div className={classes.sectionMobile}>
-              <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
-                <MoreIcon />
-              </IconButton>
-            </div>
+            
           </Toolbar>
         </AppBar>
         {renderMenu}
-        {renderMobileMenu}
+    
       </div>
     );
   }
 }
 
-MyAppBar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+function mapStateToProps(state) {
 
-export default withStyles(styles)(MyAppBar);
+  const { alertMessage ,loginInfo} = state.auth;
+  return {
+
+      alertMessage,
+      loginInfo,
+  };
+}
+
+
+ const page =connect(mapStateToProps, null)( withStyles(styles)(MyAppBar));
+
+export {page as MyAppBar};

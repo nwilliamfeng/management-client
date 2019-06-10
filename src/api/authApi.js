@@ -6,8 +6,8 @@ import { ApiHelper } from './apiHelper'
  */
 class AuthApi {
 
-    async logout(){
-
+    async logout(userId,accessToken){
+        return await ApiHelper.post('/auth/logout',{userId,accessToken});
     }
  
 
