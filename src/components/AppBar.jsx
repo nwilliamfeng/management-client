@@ -100,8 +100,8 @@ class MyAppBar extends React.Component {
 
   handleLogoutClick=()=>{
     this.setState({ anchorEl: null });
-    const {userName,accessToken} =this.props.loginInfo;
-    this.props.dispatch(authActions.logout(userName,accessToken));
+    const {userId,accessToken} =this.props.loginInfo;
+    this.props.dispatch(authActions.logout(userId,accessToken));
   }
 
   handleMobileMenuOpen = event => {

@@ -22,7 +22,7 @@ function login(userId, password) {
             }
             else {
                 appContext.saveLoginInfo(data);
-                dispatch({ type: authConstants.LOGIN, info: data });
+                dispatch({ type: authConstants.LOGIN, loginInfo: data });
                 history.push('/');//导航到主页
             }
         }
