@@ -44,7 +44,7 @@ function logout(userId, accessToken) {
             else {
                 appContext.clearLoginInfo();
                 dispatch({ type: authConstants.LOGOUT, info: data });
-                history.push('/');//导航到主页
+                history.push('/login');//导航到登录页
             }
         }
         catch (error) {

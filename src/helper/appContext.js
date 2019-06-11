@@ -33,8 +33,8 @@ class AppContext {
     _saveItem(name, value, expireHours = 24) {
         if (cookies.get(name) == null) {
             let expires = new Date();
-            expires.setHours(expires.getHours() + expireHours);
-            cookies.set(name, value, { path: '/', expires });
+           // expires.setHours(expires.getHours() + expireHours); //过期处理没必要放在客户端验证，而应该是服务端
+            cookies.set(name, value, { path: '/' });
         }
     }
 
